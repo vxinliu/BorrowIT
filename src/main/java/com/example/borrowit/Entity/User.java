@@ -1,13 +1,17 @@
 package com.example.borrowit.Entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.mapping.List;
 
 import java.util.Set;
 
 @Entity
 @Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     @Id
@@ -33,8 +37,6 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<Review> reviews;
 
-    @OneToMany(mappedBy = "user")
-    private Set<Feedback> feedbacks;
 
     @OneToMany(mappedBy = "borrower")
     private Set<Contract> borrowedContracts;
