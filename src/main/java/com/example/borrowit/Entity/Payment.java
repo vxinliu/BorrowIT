@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Data
@@ -22,7 +23,7 @@ public class Payment {
     private float amount;
     @JsonProperty("date")
 
-    private LocalDateTime date;
+    private Date date;
     @JsonProperty("status")
 
     @Enumerated(EnumType.STRING)
