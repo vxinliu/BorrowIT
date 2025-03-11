@@ -1,8 +1,8 @@
 package com.example.borrowit.Entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import java.util.Set;
+import lombok.*;
+import java.util.*;
 
 @Entity
 @Data
