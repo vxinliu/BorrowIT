@@ -7,7 +7,7 @@ import java.util.List;
 public interface FeedbackService {
     List<Feedback> retrieveAllFeedbacks();
     Feedback retrieveFeedback(Long id);
-    Feedback addFeedback(Feedback feedback);
+    Feedback addFeedback(Feedback feedback,Long itemId);
     void removeFeedback(Long id);
-    Feedback modifyFeedback(Feedback feedback);
+    Feedback modifyFeedback(Feedback feedback, Long itemId);
 }

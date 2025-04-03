@@ -1,7 +1,10 @@
 package com.example.borrowit.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Set;
 
@@ -24,9 +27,7 @@ public class Item {
     @ManyToOne
     private Category category;
 
-   @OneToMany
-   private Set<Feedback> feedbacks;
-
-
-
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("item")  // Empêche la récursion infinie
+    private Set<Feedback> feedbacks;
 }

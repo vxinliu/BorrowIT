@@ -24,14 +24,15 @@ public class FeedbackController {
         return feedbackService.retrieveFeedback(id);
     }
 
-    @PostMapping("/add-feedback")
-    public Feedback createFeedback(@RequestBody Feedback feedback) {
-        return feedbackService.addFeedback(feedback);
+    @PostMapping("/add-feedback/{itemId}")
+    public Feedback createFeedback(@RequestBody Feedback feedback, @PathVariable Long itemId) {
+        return feedbackService.addFeedback(feedback, itemId);
     }
 
-    @PutMapping("/modify-feedback")
-    public Feedback updateFeedback(@RequestBody Feedback feedback) {
-        return feedbackService.modifyFeedback(feedback);
+
+    @PutMapping("/modify-feedback/{itemId}")
+    public Feedback updateFeedback(@RequestBody Feedback feedback, @PathVariable Long itemId) {
+        return feedbackService.modifyFeedback(feedback, itemId);
     }
 
     @DeleteMapping("/{id}")

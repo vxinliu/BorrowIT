@@ -1,5 +1,6 @@
 package com.example.borrowit.Entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,10 +17,13 @@ public class Feedback {
 
     private String message;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime date;
 
     @ManyToOne
+    @JoinColumn(name = "item_id", referencedColumnName = "id", nullable = false)
     private Item item;
-    @OneToMany
+
+    @OneToMany(mappedBy = "feedback", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Reacts> reacts;
 }
