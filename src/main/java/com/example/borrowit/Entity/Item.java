@@ -1,6 +1,7 @@
 package com.example.borrowit.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -28,6 +29,6 @@ public class Item {
     private Category category;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("item")  // Empêche la récursion infinie
+    @JsonManagedReference // Allow the Item to serialize its Feedbacks
     private Set<Feedback> feedbacks;
 }
