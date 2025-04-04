@@ -11,4 +11,5 @@ public interface IFeedbackService {
     public Feedback addFeedback(Feedback f);
     public void removeFeedback(Long feedbackId);
     public Feedback modifyFeedback(Feedback f);
+    public List<Feedback> getMostReactedFeedbacks(int topN) ;
 }

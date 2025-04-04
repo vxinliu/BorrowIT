@@ -49,5 +49,12 @@ public class FeedbackController {
         feedbackService.removeFeedback(feedbackId);
     }
 
+    @GetMapping("/most-reacted")
+    public ResponseEntity<List<Feedback>> getMostReactedFeedbacks(@RequestParam int topN) {
+        List<Feedback> mostReactedFeedbacks = feedbackService.getMostReactedFeedbacks(topN);
+        return ResponseEntity.ok(mostReactedFeedbacks);
+    }
+
+
 
 }

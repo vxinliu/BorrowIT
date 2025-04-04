@@ -4,6 +4,8 @@ import com.example.borrowit.Entity.Feedback;
 import com.example.borrowit.repository.FeedbackRepository;
 import com.example.borrowit.repository.ReactsRepository;
 import com.example.borrowit.service.IFeedbackService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ public class FeedbackServiceImpl implements IFeedbackService {
     private FeedbackRepository feedbackRepository;
     @Autowired
     private ReactsRepository reactsRepository;
+    @Autowired
+    private EntityManager entityManager;
     @Override
     @Transactional
     public List<Feedback> retrieveAllFeedbacks() {
@@ -67,4 +71,17 @@ public class FeedbackServiceImpl implements IFeedbackService {
             throw new RuntimeException("Feedback not found with ID: " + f.getId());
         }
     }
+
+    @Override
+    public List<Feedback> getMostReactedFeedbacks(int topN) {
+        String jpql = "SELECT f FROM Feedback f " +
+                "JOIN f.reacts r " +
+                "GROUP BY f.id " +
+                "ORDER BY COUNT(r) DESC";
+        Query query = entityManager.createQuery(jpql);
+        query.setMaxResults(topN);  // Limit the results to the top N feedbacks
+        return query.getResultList();  // Return the list of feedbacks
+    }
+
+
 }
