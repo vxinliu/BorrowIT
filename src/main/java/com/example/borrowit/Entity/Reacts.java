@@ -1,13 +1,21 @@
 package com.example.borrowit.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Data
-public class Reacts {
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Reacts implements Serializable {
+    @Serial
+    private static final long serialVersionUID=1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +31,7 @@ public class Reacts {
 
 
     @ManyToOne
+    @JsonIgnore
     private Feedback feedback;
 
     public enum Reaction {

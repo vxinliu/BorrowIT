@@ -1,14 +1,27 @@
 package com.example.borrowit.Entity;
 
-import jakarta.persistence.*;
-import lombok.Data;
 
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Set;
+
+import java.util.List;
 
 @Entity
-@Data
-public class Feedback {
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Feedback implements Serializable {
+    @Serial
+    private static final long serialVersionUID=1L;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +33,8 @@ public class Feedback {
 
     @ManyToOne
     private Item item;
-    @OneToMany
-    private Set<Reacts> reacts;
+    @OneToMany(mappedBy = "feedback", cascade = CascadeType.ALL)
+    private List<Reacts> reacts;
+
+
 }

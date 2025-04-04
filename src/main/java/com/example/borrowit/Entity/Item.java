@@ -1,14 +1,20 @@
 package com.example.borrowit.Entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
-import java.util.Set;
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.List;
 
 @Entity
-@Data
-public class Item {
-
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Item implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,9 +30,6 @@ public class Item {
     @ManyToOne
     private Category category;
 
-   @OneToMany
-   private Set<Feedback> feedbacks;
-
-
-
+    @OneToMany(mappedBy = "item",cascade=CascadeType.ALL)
+    private List<Feedback> feedbacks;
 }
