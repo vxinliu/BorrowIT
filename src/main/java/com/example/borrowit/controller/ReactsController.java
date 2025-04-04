@@ -5,6 +5,7 @@ import com.example.borrowit.Entity.Reacts;
 import com.example.borrowit.service.IReactsService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,5 +40,13 @@ public class ReactsController {
     public void removeReact(@PathVariable Long reactId) {
         reactsService.removeReact(reactId);
     }
+
+    // Controller method where you call reactsService.countReactionsForFeedback
+    @GetMapping("/reactionCount/{feedbackId}")
+    public ResponseEntity<Long> getReactionCountForFeedback(@PathVariable Long feedbackId) {
+        long reactionCount = reactsService.countReactionsForFeedback(feedbackId);
+        return ResponseEntity.ok(reactionCount);
+    }
+
 
 }

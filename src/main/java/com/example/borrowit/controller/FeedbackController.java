@@ -2,8 +2,10 @@ package com.example.borrowit.controller;
 
 import com.example.borrowit.Entity.Feedback;
 import com.example.borrowit.service.IFeedbackService;
+import com.example.borrowit.service.IReactsService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +17,7 @@ public class FeedbackController {
 
     @Autowired
     public IFeedbackService feedbackService;
+    public IReactsService reactsService;
 
     // Retrieve all feedbacks
     @GetMapping("/retrieve-all-feedbacks")
@@ -45,4 +48,6 @@ public class FeedbackController {
     public void deleteFeedback(@PathVariable("id") Long feedbackId) {
         feedbackService.removeFeedback(feedbackId);
     }
+
+
 }
