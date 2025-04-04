@@ -1,6 +1,7 @@
 package com.example.borrowit.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,6 +14,7 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Reacts implements Serializable {
     @Serial
     private static final long serialVersionUID=1L;
@@ -31,7 +33,7 @@ public class Reacts implements Serializable {
 
 
     @ManyToOne
-    @JsonIgnore
+    @JsonBackReference
     private Feedback feedback;
 
     public enum Reaction {

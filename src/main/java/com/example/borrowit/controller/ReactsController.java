@@ -18,8 +18,9 @@ public class ReactsController {
     public IReactsService reactsService;
 
     @GetMapping("/retrieve-all-reacts")
-    public List<Reacts> getReacts(){
-        return reactsService.retrieveAllReacts();
+    public ResponseEntity<List<Reacts>> getAllReacts() {
+        List<Reacts> reacts = reactsService.retrieveAllReacts();
+        return ResponseEntity.ok(reacts);
     }
     @GetMapping("/retrieve-react/{reactsId}")
     public Reacts getReactById(@PathVariable Long reactsId) {

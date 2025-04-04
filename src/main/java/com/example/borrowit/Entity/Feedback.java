@@ -3,6 +3,7 @@ package com.example.borrowit.Entity;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,6 +35,7 @@ public class Feedback implements Serializable {
     @ManyToOne
     private Item item;
     @OneToMany(mappedBy = "feedback", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Reacts> reacts;
 
 
