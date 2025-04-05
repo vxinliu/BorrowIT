@@ -1,17 +1,9 @@
 package com.example.borrowit.Entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import java.util.Set;
 
 @Entity
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class User {
 
     @Id
@@ -24,6 +16,10 @@ public class User {
     private String password;
     private String phone;
     private String address;
+    private String genre;  // Champ genre ajouté
+    private String status;  // Champ genre ajouté
+
+    private String dateDeNaissance;  // Champ dateDeNaissance ajouté
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -55,6 +51,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<Notification> notifications;
 
+    // Enum Role pour définir les rôles de l'utilisateur
     public enum Role {
         ADMIN, BORROWER, OWNER
     }
@@ -80,7 +77,13 @@ public class User {
     public String getName() {
         return name;
     }
+    public String getStatus() {
+        return name;
+    }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
     public void setName(String name) {
         this.name = name;
     }
@@ -115,6 +118,22 @@ public class User {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public String getDateDeNaissance() {
+        return dateDeNaissance;
+    }
+
+    public void setDateDeNaissance(String dateDeNaissance) {
+        this.dateDeNaissance = dateDeNaissance;
     }
 
     public Role getRole() {
