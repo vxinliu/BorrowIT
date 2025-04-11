@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/discounts")
+@RequestMapping("/discounts")
 public class DiscountController {
 
     @Autowired
     private DiscountService discountService;
 
-    @GetMapping
+    @GetMapping("/get-discounts")
     public List<Discount> getAllDiscounts() {
         return discountService.getAllDiscounts();
     }
@@ -24,7 +24,7 @@ public class DiscountController {
         return discountService.getDiscountById(id);
     }
 
-    @PostMapping
+    @PostMapping("/add-discounts")
     public Discount createDiscount(@RequestBody Discount discount) {
         return discountService.saveDiscount(discount);
     }

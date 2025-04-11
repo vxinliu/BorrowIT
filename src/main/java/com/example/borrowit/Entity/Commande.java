@@ -1,10 +1,12 @@
 package com.example.borrowit.Entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.*;
 
+import java.util.Date;
 
 @Entity
 @Getter
@@ -15,30 +17,36 @@ public class Commande {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @JsonProperty
+
     private double totalPrice;
-    @JsonProperty
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private Date createdDate;
-    @JsonProperty
     private String status;
-    @JsonProperty
     private String description;
-
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Long getId() {
         return id;
     }
 
-    public Discount getDiscount() {
-        return discount;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setDiscount(Discount discount) {
-        this.discount = discount;
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 
     public String getDescription() {
@@ -57,21 +65,14 @@ public class Commande {
         this.status = status;
     }
 
-    public Date getCreatedDate() {
-        return createdDate;
+    public Discount getDiscount() {
+        return discount;
     }
 
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
+    public void setDiscount(Discount discount) {
+        this.discount = discount;
     }
 
-    public double getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(double totalPrice) {
-        this.totalPrice = totalPrice;
-    }
     public User getUser() {
         return user;
     }
@@ -79,11 +80,14 @@ public class Commande {
     public void setUser(User user) {
         this.user = user;
     }
+
     @ManyToOne
+    @JsonManagedReference // vers Discount
     @JoinColumn(name = "discount_id")
     private Discount discount;
 
     @ManyToOne
+    @JsonBackReference // vers User
     @JoinColumn(name = "user_id")
     private User user;
 }

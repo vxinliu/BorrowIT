@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/commandes")
+@RequestMapping("/commandes")
 public class CommandeController {
 
     @Autowired
     private CommandeService commandeService;
 
-    @GetMapping
+    @GetMapping("/get-commandes")
     public List<Commande> getAllCommandes() {
         return commandeService.getAllCommandes();
     }
@@ -23,7 +23,7 @@ public class CommandeController {
         return commandeService.getCommandeById(id);
     }
 
-    @PostMapping
+    @PostMapping("/add-commandes")
     public Commande createCommande(@RequestBody Commande commande) {
         return commandeService.saveCommande(commande);
     }
