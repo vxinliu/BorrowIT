@@ -11,6 +11,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/contracts")
+
+
 public class ContractController {
     @Autowired
     private ContractService contractService;
@@ -18,14 +20,36 @@ public class ContractController {
 
     // Création d'un contrat
     @PostMapping
-
     public ResponseEntity<Contract> createContract(
             @RequestParam Long borrowerId,
             @RequestParam Long ownerId,
             @RequestBody Contract contract) {
+        System.out.println("borrowerId: " + borrowerId + ", ownerId: " + ownerId);
+        System.out.println("Contract received: " + contract);
+
         try {
             Contract createdContract = contractService.addContract(borrowerId, ownerId, contract);
+            System.out.println("Contract created with ID: " + createdContract.getId());  // Log ID
             return new ResponseEntity<>(createdContract, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace(); // Affiche l'erreur complète
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/update-signatures/{contractId}")
+    public Contract updateSignatures(@PathVariable Long contractId, @RequestBody Contract contract) {
+        return contractService.updateSignatures(contractId, contract);
+    }
+    // Enregistrer les signatures
+    @PutMapping("/{id}/signatures")
+    public ResponseEntity<Contract> saveSignatures(
+            @PathVariable Long id,
+            @RequestParam String ownerSignature,
+            @RequestParam String borrowerSignature) {
+        try {
+            Contract contract = contractService.saveSignatures(id, ownerSignature, borrowerSignature);
+            return new ResponseEntity<>(contract, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

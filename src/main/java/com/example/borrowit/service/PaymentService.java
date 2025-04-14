@@ -5,7 +5,7 @@ import com.example.borrowit.Entity.Payment;
 import java.util.List;
 
 public interface PaymentService {
-    //public Payment addPayment(Payment payment);
+    public Payment addPayment(Long contractId,Payment payment);
     public Payment getPaymentById(Long id);
     public List<Payment> getAllPayments();
     public Payment updatePayment(Long id, Payment payment);

@@ -20,31 +20,66 @@ public class Payment {
     private Long id;
     @JsonProperty("amount")
 
-    private float amount;
+    private Double amount;
     @JsonProperty("date")
 
     private Date date;
+    @JsonProperty("stripePaymentIntentId")
+    private String stripePaymentIntentId; // ID renvoyé par Stripe, utile pour retrouver le paiement
     @JsonProperty("status")
-
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Contract contract;
 
+
+
     public enum PaymentStatus {
-        PENDING, COMPLETED, FAILED
+        PENDING, SUCCEEDED, FAILED,PROCESSING
     }
 
     public void setContract(Contract contract) {
         this.contract = contract;
     }
 
-    public void setAmount(float amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Double getAmount() {
+        return amount;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public PaymentStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PaymentStatus status) {
+        this.status = status;
+    }
+
+    public Contract getContract() {
+        return contract;
+    }
+    public void setStripePaymentIntentId(String stripePaymentIntentId) {
+        this.stripePaymentIntentId = stripePaymentIntentId;
+    }
+
 }

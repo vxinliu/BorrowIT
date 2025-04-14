@@ -12,43 +12,39 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/payments")
+
 public class PaymentController {
 
     @Autowired
-    private PaymentServiceImpl paymentService;
+    private PaymentService paymentService;
 
-    @GetMapping
-    public ResponseEntity<List<Payment>> getAllPayments() {
-        List<Payment> payments = paymentService.getAllPayments();
-        return new ResponseEntity<>(payments, HttpStatus.OK);
+
+    @PostMapping("/{contractId}")
+    public Payment addPayment(@PathVariable Long contractId, @RequestBody Payment payment) {
+        return paymentService.addPayment(contractId, payment);
     }
 
+    // ✅ Obtenir un paiement par ID
     @GetMapping("/{id}")
-    public ResponseEntity<Payment> getPaymentById(@PathVariable Long id) {
-        try {
-            Payment payment = paymentService.getPaymentById(id);
-            return new ResponseEntity<>(payment, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-    @PutMapping("/{id}")
-    public ResponseEntity<Payment> updatePayment(@PathVariable Long id, @RequestBody Payment payment) {
-        try {
-            Payment updatedPayment = paymentService.updatePayment(id, payment);
-            return new ResponseEntity<>(updatedPayment, HttpStatus.OK);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public Payment getPaymentById(@PathVariable Long id) {
+        return paymentService.getPaymentById(id);
     }
 
+    // ✅ Obtenir tous les paiements
+    @GetMapping
+    public List<Payment> getAllPayments() {
+        return paymentService.getAllPayments();
+    }
+
+    // ✅ Modifier un paiement
+    @PutMapping("/{id}")
+    public Payment updatePayment(@PathVariable Long id, @RequestBody Payment payment) {
+        return paymentService.updatePayment(id, payment);
+    }
+
+    // ✅ Supprimer un paiement
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePayment(@PathVariable Long id) {
-        try {
-            paymentService.deletePayment(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public void deletePayment(@PathVariable Long id) {
+        paymentService.deletePayment(id);
     }
 }

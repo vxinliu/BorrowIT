@@ -23,16 +23,28 @@ public class ContractServiceImpl implements ContractService {
     private UserRepository userRepository;
 
     @Override
-    public Contract addContract(Long borrowerId, Long ownerId,Contract contract) {
+    public Contract addContract(Long borrowerId, Long ownerId, Contract contract) {
         User borrower = userRepository.findById(borrowerId).orElseThrow(() -> new RuntimeException("Borrower not found"));
         User owner = userRepository.findById(ownerId).orElseThrow(() -> new RuntimeException("Owner not found"));
+        contract.setId(null);
         contract.setBorrower(borrower);
         contract.setOwner(owner);
-        Payment payment = new Payment();
-        payment.setContract(contract);
-        payment.setAmount(12222F);
-        paymentRepository.save(payment);
-        contract.setPayment(payment);
+
+
+
+        return contractRepository.save(contract);
+
+    }
+
+
+    // Méthode pour ajouter les signatures au contrat
+    public Contract saveSignatures(Long contractId, String ownerSignature, String borrowerSignature) {
+        Contract contract = contractRepository.findById(contractId)
+                .orElseThrow(() -> new RuntimeException("Contract not found"));
+
+        contract.setOwnerSignature(ownerSignature);
+        contract.setBorrowerSignature(borrowerSignature);
+
         return contractRepository.save(contract);
     }
 
@@ -55,7 +67,16 @@ public class ContractServiceImpl implements ContractService {
             throw new RuntimeException("Contract not found with id " + id);
         }
     }
+    public Contract updateSignatures(Long contractId, Contract contract) {
+        Contract existingContract = contractRepository.findById(contractId)
+                .orElseThrow(() -> new RuntimeException("Contrat non trouvé"));
 
+        // Mettre à jour les signatures
+        existingContract.setOwnerSignature(contract.getOwnerSignature());
+        existingContract.setBorrowerSignature(contract.getBorrowerSignature());
+
+        return contractRepository.save(existingContract);
+    }
     @Override
     public void deleteContract(Long id) {
         if (contractRepository.existsById(id)) {

@@ -27,15 +27,20 @@ public class Contract {
     private Date endDate;
     @JsonProperty("terms")
     private String terms;
-
+    @JsonProperty("details")
+    private String details;
     @ManyToOne
     private User borrower;
 
     @ManyToOne
     private User owner;
 
-    @OneToOne
-    private Payment payment;
+  @OneToOne
+private Payment payment;
+@Column(name = "owner_signature", columnDefinition = "TEXT")
+    private String ownerSignature;
+    @Column(name = "borrower_signature", columnDefinition = "TEXT")
+    private String borrowerSignature;
 
     public void setBorrower(User borrower) {
         this.borrower = borrower;
@@ -45,11 +50,31 @@ public class Contract {
         this.owner = owner;
     }
 
-    public void setPayment(Payment payment) {
-        this.payment = payment;
-    }
+//    public void setPayment(Payment payment) {
+//        this.payment = payment;
+//    }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getOwnerSignature() {
+        return ownerSignature;
+    }
+
+    public void setOwnerSignature(String ownerSignature) {
+        this.ownerSignature = ownerSignature;
+    }
+
+    public String getBorrowerSignature() {
+        return borrowerSignature;
+    }
+
+    public void setBorrowerSignature(String borrowerSignature) {
+        this.borrowerSignature = borrowerSignature;
+    }
+
+    public Long getId() {
+        return id;
     }
 }
