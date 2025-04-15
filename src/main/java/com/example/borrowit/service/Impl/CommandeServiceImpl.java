@@ -1,16 +1,40 @@
 package com.example.borrowit.service.Impl;
+import com.example.borrowit.DTO.CommandeDTO;
+import com.example.borrowit.DTO.CreateCommandeRequest;
 import com.example.borrowit.Entity.*;
 import com.example.borrowit.repository.*;
 import com.example.borrowit.service.*;
+import jakarta.persistence.EntityNotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
 public class CommandeServiceImpl implements CommandeService {
+    /***********************************************
 
     @Autowired
+    private ModelMapper modelMapper;
+
+    public CommandeDTO convertToDto(Commande commande) {
+        return modelMapper.map(commande, CommandeDTO.class);
+    }
+
+    public Commande convertToEntity(CommandeDTO dto) {
+        return modelMapper.map(dto, Commande.class);
+    }
+
+     *
+     *
+     *
+     *
+     *
+     */
+    @Autowired
     private CommandeRepository commandeRepository;
+    @Autowired
+    private ItemRepository itemRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -23,17 +47,56 @@ public class CommandeServiceImpl implements CommandeService {
 
     @Override
     public Commande getCommandeById(Long id) {
-        return commandeRepository.findById(id).orElse(null);
+        return commandeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Commande not found"));
     }
 
     @Override
-    public Commande saveCommande(Commande commande) {
+    public Commande saveCommande(CreateCommandeRequest request) {
+        Commande commande = new Commande();
+        commande.setCreatedDate(new Date());
+        commande.setStatus("EN_ATTENTE"); // par défaut
+        commande.setDescription(request.getDescription());
+
+        if (request.getUserId() != null) {
+            User user = userRepository.findById(request.getUserId())
+                    .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
+            commande.setUser(user);
+        }
+
+        if (request.getDiscountId() != null) {
+            Discount discount = discountRepository.findById(request.getDiscountId())
+                    .orElseThrow(() -> new EntityNotFoundException("Remise non trouvée"));
+            commande.setDiscount(discount);
+        }
+
+        List<CommandeItem> commandeItems = new ArrayList<>();
+        double total = 0;
+
+        for (CreateCommandeRequest.ItemQuantity itemQuantity : request.getItems()) {
+            Item item = itemRepository.findById(itemQuantity.getItemId())
+                    .orElseThrow(() -> new EntityNotFoundException("Item non trouvé"));
+
+            CommandeItem commandeItem = new CommandeItem();
+            commandeItem.setItem(item);
+            commandeItem.setQuantity(itemQuantity.getQuantity());
+            commandeItem.setUnitPrice(item.getPrice());
+            commandeItem.setCommande(commande);
+
+            total += item.getPrice() * itemQuantity.getQuantity();
+            commandeItems.add(commandeItem);
+        }
+
+        commande.setTotalPrice(total);
+        commande.setCommandeItems(commandeItems);
+
         return commandeRepository.save(commande);
     }
-@Override
-    public Commande updateCommande(Long id, Commande updatedCommande) {
-        Commande existingCommande = commandeRepository.findById(id).orElseThrow();
 
+    @Override
+    public Commande updateCommande(Long id, Commande updatedCommande) {
+        Commande existingCommande = commandeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Commande not found"));
+
+        // Mise à jour des propriétés
         existingCommande.setTotalPrice(updatedCommande.getTotalPrice());
         existingCommande.setCreatedDate(updatedCommande.getCreatedDate());
         existingCommande.setStatus(updatedCommande.getStatus());
@@ -56,31 +119,33 @@ public class CommandeServiceImpl implements CommandeService {
     public void deleteCommande(Long id) {
         commandeRepository.deleteById(id);
     }
+
     @Override
     public double calculateTotalPrice(Long commandeId) {
         Commande commande = getCommandeById(commandeId);
-        if (commande != null && commande.getDiscount() != null) {
-            double discountValue = commande.getTotalPrice() * (commande.getDiscount().getPercentage() / 100.0);
-            return commande.getTotalPrice() - discountValue;
+        double total = 0;
+        for (CommandeItem item : commande.getCommandeItems()) {
+            total += item.getUnitPrice() * item.getQuantity();
         }
-        return commande != null ? commande.getTotalPrice() : 0.0;
+
+        if (commande.getDiscount() != null) {
+            double discountValue = total * (commande.getDiscount().getPercentage() / 100.0);
+            total -= discountValue;
+        }
+
+        commande.setTotalPrice(total);
+        commandeRepository.save(commande); // Update en DB
+        return total;
     }
 
     @Override
     public Commande applyDiscountToCommande(Long commandeId, Long discountId) {
         Commande commande = getCommandeById(commandeId);
-        Discount discount = discountRepository.findById(discountId).orElse(null);
-        if (commande != null && discount != null) {
-            commande.setDiscount(discount);
-            return commandeRepository.save(commande);
-        }
-        return null;
-    }
+        Discount discount = discountRepository.findById(discountId).orElseThrow(() -> new EntityNotFoundException("Discount not found"));
 
-    //@Override
-    //public List<Commande> getCommandesByUser(Long userId) {
-   //     return commandeRepository.findByUserId(userId);
-    //}
+        commande.setDiscount(discount);
+        return commandeRepository.save(commande);
+    }
 
     @Override
     public List<Commande> getCommandesByDateRange(Date start, Date end) {
