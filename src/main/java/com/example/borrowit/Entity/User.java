@@ -17,8 +17,8 @@ public class User {
     private String phone;
     private String address;
     private String genre;  // Champ genre ajouté
-    private String status;  // Champ genre ajouté
-
+    @Column(nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'Active'")
+    private String status = "Active";
     private String dateDeNaissance;  // Champ dateDeNaissance ajouté
 
     @Enumerated(EnumType.STRING)
@@ -78,7 +78,8 @@ public class User {
         return name;
     }
     public String getStatus() {
-        return name;
+        return status; // CORRECTION: Retourne le champ status, pas name
+
     }
 
     public void setStatus(String status) {

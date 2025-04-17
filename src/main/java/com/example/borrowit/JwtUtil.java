@@ -18,11 +18,16 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
+    // Clé secrète utilisée pour signer et valider le token
     private static final String SECRET_KEY_STRING = "your-secret-key-that-is-at-least-32-characters-long";
     private static final SecretKey SECRET_KEY = new SecretKeySpec(
             SECRET_KEY_STRING.getBytes(StandardCharsets.UTF_8),
             SignatureAlgorithm.HS256.getJcaName());
+
+    // Durée de validité du token (10 heures ici)
     private static final int TOKEN_VALIDITY = 1000 * 60 * 60 * 10; // 10 heures
+
+    // Logger pour les erreurs et événements
     private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 
     // Extraire le nom d'utilisateur (email) du token

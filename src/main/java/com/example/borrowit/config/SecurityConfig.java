@@ -6,6 +6,7 @@ import com.example.borrowit.service.impl.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,36 +30,31 @@ public class SecurityConfig {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
     }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         JwtAuthorizationFilter jwtAuthorizationFilter = new JwtAuthorizationFilter(authenticationManager, userService, jwtUtil);
 
         http
-                .csrf(csrf -> csrf.disable())  // Désactive la protection CSRF (utile pour les API REST)
-                .cors()  // Active la configuration CORS
-                .and()
-                .authorizeRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()  // Permet l'accès à l'authentification
-                        .requestMatchers("/api/users/**").permitAll()  // Permet l'accès à l'endpoint des utilisateurs
-                        .requestMatchers("/api/forgot-password", "/api/reset-password").permitAll()  // Permet l'accès à la réinitialisation de mot de passe
-                        .requestMatchers("/api/test/auth-status").authenticated()  // Nécessite une authentification pour ce chemin
-                        .anyRequest().authenticated()  // Toute autre requête nécessite une authentification
+                .csrf(csrf -> csrf.disable()) // Désactivation de CSRF
+                .cors(Customizer.withDefaults()) // Nouvelle syntaxe recommandée pour activer CORS
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/users/**").permitAll()
+                        .requestMatchers("/api/forgot-password", "/api/reset-password").permitAll()
+                        .requestMatchers("/api/test/auth-status").authenticated()
+                        .anyRequest().authenticated()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // Désactive la gestion des sessions (utilise JWT)
-                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)  // Ajoute le filtre d'autorisation JWT avant l'authentification standard
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .headers(headers -> headers
-                        .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsMode.SAMEORIGIN))  // Protection contre les attaques de type clickjacking
-                        .contentSecurityPolicy(csp -> csp
-                                .policyDirectives("frame-ancestors 'self' http://localhost:4200")  // Politique de sécurité des contenus (CSP)
-                        )
-                        .xssProtection(xss -> xss
-                                .headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)  // Protection contre les attaques XSS
-                        )
+                        .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsMode.SAMEORIGIN))
+                        .contentSecurityPolicy(csp -> csp.policyDirectives("frame-ancestors 'self' http://localhost:4200"))
+                        .xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
                 );
 
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
