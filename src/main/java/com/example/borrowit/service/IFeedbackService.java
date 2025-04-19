@@ -12,4 +12,7 @@ public interface IFeedbackService {
     public void removeFeedback(Long feedbackId);
     public Feedback modifyFeedback(Feedback f);
     public List<Feedback> getMostReactedFeedbacks(int topN) ;
+    public void reportFeedback(Long feedbackId, String reason);
+    public List<Feedback> retrieveReportedFeedbacks();
+    public Feedback rejectFeedback(Long feedbackId);
 }

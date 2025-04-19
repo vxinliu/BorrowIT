@@ -83,5 +83,37 @@ public class FeedbackServiceImpl implements IFeedbackService {
         return query.getResultList();  // Return the list of feedbacks
     }
 
+    @Override
+    public void reportFeedback(Long feedbackId, String reason) {
+        Optional<Feedback> feedbackOpt = feedbackRepository.findById(feedbackId);
+        if (feedbackOpt.isPresent()) {
+            Feedback feedback = feedbackOpt.get();
+            feedback.setReported(true);  // Mettre à jour l'état du feedback en signalé
+            feedback.setReason(reason);  // Ajouter la raison du signalement
+            feedbackRepository.save(feedback);
+        } else {
+            throw new RuntimeException("Feedback not found with ID: " + feedbackId);
+        }
+    }
+
+
+    @Override
+    public List<Feedback> retrieveReportedFeedbacks() {
+        return feedbackRepository.findByReported(true);
+    }
+
+    @Override
+    public Feedback rejectFeedback(Long feedbackId) {
+        Optional<Feedback> feedbackOpt = feedbackRepository.findById(feedbackId);
+        if (feedbackOpt.isPresent()) {
+            Feedback feedback = feedbackOpt.get();
+            feedback.setReported(false);  // Set the reported status to false (or 0)
+            feedback.setReason(null);  // Optionally, clear the reason for reporting
+            return feedbackRepository.save(feedback);  // Save the updated feedback
+        } else {
+            throw new RuntimeException("Feedback not found with ID: " + feedbackId);
+        }
+    }
+
 
 }

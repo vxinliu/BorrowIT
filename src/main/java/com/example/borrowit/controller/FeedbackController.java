@@ -56,6 +56,43 @@ public class FeedbackController {
         return ResponseEntity.ok(mostReactedFeedbacks);
     }
 
+    @PutMapping(value = "/report-feedback/{id}", produces = "text/plain")
+    public ResponseEntity<String> reportFeedback(@PathVariable("id") Long feedbackId, @RequestParam String reason) {
+        try {
+            feedbackService.reportFeedback(feedbackId, reason);
+            return ResponseEntity.ok("Feedback reported successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body("Feedback not found");
+        }
+    }
+
+
+
+    @GetMapping("/retrieve-reported-feedbacks")
+    public List<Feedback> getReportedFeedbacks() {
+        return feedbackService.retrieveReportedFeedbacks();
+    }
+
+    @DeleteMapping("/delete-reported-feedback/{id}")
+    public void deleteReportedFeedback(@PathVariable("id") Long feedbackId) {
+        feedbackService.removeFeedback(feedbackId);
+    }
+
+    // Reject a reported feedback by ID
+    @PutMapping("/reject-feedback/{id}")
+    public ResponseEntity<String> rejectFeedback(@PathVariable("id") Long feedbackId) {
+        try {
+            Feedback updatedFeedback = feedbackService.rejectFeedback(feedbackId);
+            return ResponseEntity.ok("Feedback rejected successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body("Feedback not found");
+        }
+    }
+
+
+
+
+
 
 
 }

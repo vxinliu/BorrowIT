@@ -77,4 +77,24 @@ public class Feedback implements Serializable {
     public void setReacts(List<Reacts> reacts) {
         this.reacts = reacts;
     }
+    private boolean reported;
+
+    // getters and setters for reported
+    public boolean isReported() {
+        return reported;
+    }
+
+    public void setReported(boolean reported) {
+        this.reported = reported;
+    }
+
+    private String reason;
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
 }
