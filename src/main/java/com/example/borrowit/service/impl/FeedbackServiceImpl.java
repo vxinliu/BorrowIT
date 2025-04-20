@@ -4,6 +4,8 @@ import com.example.borrowit.Entity.Feedback;
 import com.example.borrowit.repository.FeedbackRepository;
 import com.example.borrowit.repository.ReactsRepository;
 import com.example.borrowit.service.IFeedbackService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import lombok.AllArgsConstructor;
@@ -11,6 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +44,10 @@ public class FeedbackServiceImpl implements IFeedbackService {
 
     @Override
     public Feedback addFeedback(Feedback f) {
+
+        if (isToxic(f.getMessage())) {
+            throw new RuntimeException("Votre message a été détecté comme toxique. Veuillez reformuler.");
+        }
         Feedback feedback = feedbackRepository.save(f);
 
         // Ensure reacts are associated with the saved feedback
@@ -115,5 +125,41 @@ public class FeedbackServiceImpl implements IFeedbackService {
         }
     }
 
+    @Override
+    public boolean isToxic(String message) {
+        try {
+            String apiKey = "AIzaSyD5Aj6HE1E5b47UKGnqOlO0bBPOCucqOMk"; // ⚠️ Remplace ici par ta vraie clé
+            String url = "https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=" + apiKey;
+
+            String payload = """
+    {
+      "comment": { "text": "%s" },
+      "languages": ["fr"],
+      "requestedAttributes": { "TOXICITY": {} }
+    }
+    """.formatted(message);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(payload))
+                    .build();
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // Log the response body to check what we get
+            System.out.println("Google API response: " + response.body());
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readTree(response.body());
+            double score = node.get("attributeScores").get("TOXICITY").get("summaryScore").get("value").asDouble();
+
+            return score >= 0.7; // Seuil de toxicité
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 }

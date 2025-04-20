@@ -15,4 +15,5 @@ public interface IFeedbackService {
     public void reportFeedback(Long feedbackId, String reason);
     public List<Feedback> retrieveReportedFeedbacks();
     public Feedback rejectFeedback(Long feedbackId);
+    public boolean isToxic(String message);
 }
