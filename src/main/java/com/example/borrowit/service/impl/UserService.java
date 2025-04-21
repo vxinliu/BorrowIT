@@ -17,15 +17,13 @@ import java.util.Optional;
 @Service
 public class UserService implements UserDetailsService {
 
-    @Autowired
-    private UserRepository userRepository;
-
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // Inject PasswordEncoder
+    @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder(); // Use BCryptPasswordEncoder
+        this.passwordEncoder = new BCryptPasswordEncoder(); // Encoder pour les mots de passe
     }
 
     // 📌 Récupérer tous les utilisateurs
@@ -45,8 +43,7 @@ public class UserService implements UserDetailsService {
 
     // 📌 Ajouter ou modifier un utilisateur
     public User saveUser(User user) {
-        // Encode password before saving
-        user.setPassword(passwordEncoder.encode(user.getPassword())); // Encode password
+        user.setPassword(passwordEncoder.encode(user.getPassword())); // Toujours encoder
         return userRepository.save(user);
     }
 
@@ -57,7 +54,6 @@ public class UserService implements UserDetailsService {
             existingUser.setName(updatedUser.getName());
             existingUser.setEmail(updatedUser.getEmail());
 
-            // If password is provided, encode and update
             if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
                 existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
             }
@@ -79,15 +75,15 @@ public class UserService implements UserDetailsService {
         userRepository.deleteByEmail(email);
     }
 
-    // ✅ Méthode pour charger l'utilisateur par son email (utilisée par Spring Security)
+    // ✅ Utilisé par Spring Security pour l’authentification
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-
         return new UserDetailsImpl(user);
     }
-    // Mettre à jour le mot de passe de l'utilisateur
+
+    // 📌 Mettre à jour le mot de passe d’un utilisateur
     public void updatePassword(String email, String newPassword) {
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
@@ -96,6 +92,19 @@ public class UserService implements UserDetailsService {
             userRepository.save(user);
         } else {
             throw new RuntimeException("Utilisateur non trouvé.");
+        }
+    }
+
+    // ✅ Créer l'utilisateur si inexistant (appelé par le login Google)
+    public void createUserIfNotExists(String email, String name) {
+        Optional<User> existing = userRepository.findByEmail(email);
+        if (existing.isEmpty()) {
+            User user = new User();
+            user.setEmail(email);
+            user.setName(name);
+            user.setPassword(""); // Vide car c'est une connexion via Google
+            user.setRole(User.Role.BORROWER); // Tu peux changer le rôle par défaut si tu veux
+            userRepository.save(user);
         }
     }
 }

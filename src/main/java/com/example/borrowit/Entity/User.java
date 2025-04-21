@@ -12,6 +12,8 @@ public class User {
 
     private Long cin;
     private String name;
+    @Column(unique = true)
+
     private String email;
     private String password;
     private String phone;
@@ -19,10 +21,13 @@ public class User {
     private String genre;  // Champ genre ajouté
     @Column(nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'Active'")
     private String status = "Active";
-    private String dateDeNaissance;  // Champ dateDeNaissance ajouté
+    private String dateDeNaissance;
 
     @Enumerated(EnumType.STRING)
     private Role role;
+    private String verificationCode;
+
+
 
     @OneToMany(mappedBy = "owner")
     private Set<Item> items;
@@ -100,7 +105,13 @@ public class User {
     public String getPassword() {
         return password;
     }
+    public String getVerificationCode() {
+        return verificationCode;
+    }
 
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+    }
     public void setPassword(String password) {
         this.password = password;
     }
