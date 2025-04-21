@@ -54,7 +54,7 @@ public class CommandeServiceImpl implements CommandeService {
     public Commande saveCommande(CreateCommandeRequest request) {
         Commande commande = new Commande();
         commande.setCreatedDate(new Date());
-        commande.setStatus("EN_ATTENTE"); // par défaut
+        commande.setStatus("EN ATTENTE"); // par défaut
         commande.setDescription(request.getDescription());
 
         if (request.getUserId() != null) {

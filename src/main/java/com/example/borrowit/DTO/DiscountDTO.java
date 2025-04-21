@@ -1,41 +1,20 @@
-package com.example.borrowit.Entity;
+package com.example.borrowit.DTO;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Entity
 @Data
-public class Discount {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class DiscountDTO {
     private Long id;
-
     private String name;
     private String code;
     private float percentage;
-
     private LocalDate startDate;
     private LocalDate endDate;
-
     private boolean active;
-
-
-    @OneToMany(mappedBy = "discount")
-    @JsonBackReference
-    private List<Commande> commandes;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    private List<Long> commandes;
 
     public Long getId() {
         return id;
@@ -43,6 +22,14 @@ public class Discount {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getCode() {
@@ -85,12 +72,11 @@ public class Discount {
         this.active = active;
     }
 
-    public List<Commande> getCommandes() {
+    public List<Long> getCommandes() {
         return commandes;
     }
 
-    public void setCommandes(List<Commande> commandes) {
+    public void setCommandes(List<Long> commandes) {
         this.commandes = commandes;
     }
-
 }

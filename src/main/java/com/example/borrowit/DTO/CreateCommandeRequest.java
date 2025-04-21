@@ -2,6 +2,7 @@ package com.example.borrowit.DTO;
 
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -13,7 +14,7 @@ public class CreateCommandeRequest {
     private Long userId;
     private Long discountId;
     private String description;
-    private List<ItemQuantity> items;
+    private List<ItemQuantity> items= new ArrayList<>();
 
     public Long getUserId() {
         return userId;

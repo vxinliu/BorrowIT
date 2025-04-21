@@ -8,7 +8,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.util.*;
 
-
 @Entity
 @Getter
 @Setter
@@ -18,13 +17,13 @@ public class Commande {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @JsonProperty
+    //@JsonProperty
     private double totalPrice;
-    @JsonProperty
+    //@JsonProperty
     private Date createdDate;
-    @JsonProperty
+    //@JsonProperty
     private String status;
-    @JsonProperty
+    //@JsonProperty
     private String description;
 
 
@@ -95,12 +94,13 @@ public class Commande {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "discount_id")
-    @JsonBackReference
+    //@JsonBackReference
     private Discount discount;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
 
     // Une commande peut contenir plusieurs items via CommandeItem
     @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL)

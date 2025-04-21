@@ -33,14 +33,22 @@ public class CommandeController {
     @PostMapping("/add-commandes")
     public ResponseEntity<?> createCommande(@RequestBody CreateCommandeRequest request) {
         try {
+            // Vérifie si la liste des items est nulle
+            if (request.getItems() == null || request.getItems().isEmpty()) {
+                return ResponseEntity.badRequest().body("Erreur : la commande doit contenir au moins un item.");
+            }
+
             Commande commande = commandeService.saveCommande(request);
             return ResponseEntity.ok(commande);
+
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erreur : " + e.getMessage());
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erreur : " + e.getMessage());
         }
     }
+
 
     // Mettre à jour une commande
     @PutMapping("/{id}")
