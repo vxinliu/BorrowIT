@@ -1,8 +1,10 @@
 package com.example.borrowit.service.impl;
 
 import com.example.borrowit.Entity.Feedback;
+import com.example.borrowit.Entity.User;
 import com.example.borrowit.repository.FeedbackRepository;
 import com.example.borrowit.repository.ReactsRepository;
+import com.example.borrowit.repository.UserRepository;
 import com.example.borrowit.service.IFeedbackService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -22,6 +24,8 @@ public class FeedbackServiceImpl implements IFeedbackService {
     @Autowired
     private ReactsRepository reactsRepository;
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private EntityManager entityManager;
     @Override
     @Transactional
@@ -38,9 +42,14 @@ public class FeedbackServiceImpl implements IFeedbackService {
 
     @Override
     public Feedback addFeedback(Feedback f) {
+        if (f.getUser() != null && f.getUser().getId() != null) {
+            User user = userRepository.findById(f.getUser().getId())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            f.setUser(user); // JPA va maintenant persister le lien
+        }
+
         Feedback feedback = feedbackRepository.save(f);
 
-        // Ensure reacts are associated with the saved feedback
         if (f.getReacts() != null) {
             f.getReacts().forEach(reacts -> {
                 reacts.setFeedback(feedback);
@@ -51,7 +60,7 @@ public class FeedbackServiceImpl implements IFeedbackService {
         return feedback;
     }
 
-    @Override
+@Override
     public void removeFeedback(Long feedbackId) {
         Optional<Feedback> feedback = feedbackRepository.findById(feedbackId);
         if (feedback.isPresent()) {

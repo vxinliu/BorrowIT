@@ -32,8 +32,10 @@ public class Feedback implements Serializable {
 
     private LocalDateTime date;
 
+    //@ManyToOne
+    //private Item item;
     @ManyToOne
-    private Item item;
+    private User user;
     @OneToMany(mappedBy = "feedback", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Reacts> reacts;
@@ -50,9 +52,9 @@ public class Feedback implements Serializable {
         return date;
     }
 
-    public Item getItem() {
-        return item;
-    }
+    //public Item getItem() {
+        //return item;
+    //}
 
     public List<Reacts> getReacts() {
         return reacts;
@@ -70,9 +72,9 @@ public class Feedback implements Serializable {
         this.date = date;
     }
 
-    public void setItem(Item item) {
-        this.item = item;
-    }
+    //public void setItem(Item item) {
+      //  this.item = item;
+    //}
 
     public void setReacts(List<Reacts> reacts) {
         this.reacts = reacts;
@@ -89,6 +91,14 @@ public class Feedback implements Serializable {
     }
 
     private String reason;
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
 
     public String getReason() {
         return reason;

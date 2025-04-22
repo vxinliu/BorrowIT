@@ -34,6 +34,6 @@ public class Item implements Serializable {
     @ManyToOne
     private Category category;
 
-    @OneToMany(mappedBy = "item",cascade=CascadeType.ALL)
-    private List<Feedback> feedbacks;
+    //@OneToMany(mappedBy = "item",cascade=CascadeType.ALL)
+   // private List<Feedback> feedbacks;
 }

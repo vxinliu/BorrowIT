@@ -2,7 +2,8 @@ package com.example.borrowit.Entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.mapping.List;
+import java.util.List;
+
 
 import java.util.Set;
 
@@ -46,6 +47,9 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private Set<Notification> notifications;
+
+    @OneToMany(mappedBy = "user",cascade=CascadeType.ALL)
+    private List<Feedback> feedbacks;
 
     public enum Role {
 ADMIN, BORROWER, OWNER
