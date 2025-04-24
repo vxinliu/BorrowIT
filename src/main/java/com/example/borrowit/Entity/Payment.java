@@ -25,6 +25,10 @@ public class Payment {
     @JsonIgnore
     private Contract contract;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public enum PaymentStatus {
         PENDING, COMPLETED, FAILED
     }

@@ -22,4 +22,9 @@ public class Feedback {
     private Item item;
     @OneToMany
     private Set<Reacts> reacts;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
 }

@@ -2,6 +2,8 @@ package com.example.borrowit.config;
 
 import com.example.borrowit.JwtAuthorizationFilter;
 import com.example.borrowit.JwtUtil;
+
+
 import com.example.borrowit.service.Impl.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,10 +41,14 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults()) // Nouvelle syntaxe recommandée pour activer CORS
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+
                         .requestMatchers("/users/**").permitAll()
                         .requestMatchers("/items/**").permitAll()
                         .requestMatchers("/commandes/**").permitAll()
                         .requestMatchers("/discounts/**").permitAll()
+
+                        .requestMatchers("/api/users/**").permitAll()
+
                         .requestMatchers("/api/forgot-password", "/api/reset-password").permitAll()
                         .requestMatchers("/api/test/auth-status").authenticated()
                         .anyRequest().authenticated()

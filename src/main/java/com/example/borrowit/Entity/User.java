@@ -1,7 +1,8 @@
 package com.example.borrowit.Entity;
 
-import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
+
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -10,6 +11,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Long cin;
     private String name;
     private String email;
@@ -24,42 +26,40 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "owner")
-    @JsonIgnoreProperties("owner")
-    private Set<Item> items;
-
-    @OneToMany(mappedBy = "borrower")
-    @JsonIgnoreProperties("borrower")
-    private Set<Request> requests;
-
-    @OneToMany(mappedBy = "user")
-    @JsonIgnoreProperties("user")
-    private Set<Review> reviews;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private Set<Commande> commandes;
-
-    @OneToMany(mappedBy = "borrower")
-    @JsonIgnoreProperties("borrower")
-    private Set<Contract> borrowedContracts;
+    private List<Feedback> feedbacks;
 
     @OneToMany(mappedBy = "owner")
-    @JsonIgnore
-    private Set<Contract> ownedContracts;
+    private List<Item> items;
+
+    @OneToMany(mappedBy = "borrower")
+    private List<Request> requests;
 
     @OneToMany(mappedBy = "user")
-    @JsonIgnoreProperties("user")
-    private Set<CustomerService> customerServices;
+    private List<Review> reviews;
 
     @OneToMany(mappedBy = "user")
-    @JsonIgnoreProperties("user")
-    private Set<Notification> notifications;
+    private List<Payment> payments;
+
+
+    @OneToMany(mappedBy = "borrower")
+    private List<Contract> borrowedContracts;
+
+    @OneToMany(mappedBy = "owner")
+    private List<Contract> ownedContracts;
+
+    @OneToMany(mappedBy = "user")
+    private List<CustomerService> customerServices;
+
+    @OneToMany(mappedBy = "user")
+    private List<Notification> notifications;
 
     // Enum Role pour définir les rôles de l'utilisateur
     public enum Role {
         ADMIN, BORROWER, OWNER
     }
+
+    // Getters et Setters
 
 
     public Long getId() {
@@ -70,20 +70,20 @@ public class User {
         this.id = id;
     }
 
-    public Long getCin() {
-        return cin;
-    }
-
-    public void setCin(Long cin) {
-        this.cin = cin;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getCin() {
+        return cin;
+    }
+
+    public void setCin(Long cin) {
+        this.cin = cin;
     }
 
     public String getEmail() {
@@ -150,67 +150,75 @@ public class User {
         this.role = role;
     }
 
-    public Set<Item> getItems() {
+    public List<Feedback> getFeedbacks() {
+        return feedbacks;
+    }
+
+    public void setFeedbacks(List<Feedback> feedbacks) {
+        this.feedbacks = feedbacks;
+    }
+
+    public List<Item> getItems() {
         return items;
     }
 
-    public void setItems(Set<Item> items) {
+    public void setItems(List<Item> items) {
         this.items = items;
     }
 
-    public Set<Request> getRequests() {
+    public List<Request> getRequests() {
         return requests;
     }
 
-    public void setRequests(Set<Request> requests) {
+    public void setRequests(List<Request> requests) {
         this.requests = requests;
     }
 
-    public Set<Review> getReviews() {
+    public List<Review> getReviews() {
         return reviews;
     }
 
-    public void setReviews(Set<Review> reviews) {
+    public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
     }
 
-    public Set<Notification> getNotifications() {
-        return notifications;
+    public List<Payment> getPayments() {
+        return payments;
     }
 
-    public void setNotifications(Set<Notification> notifications) {
-        this.notifications = notifications;
+    public void setPayments(List<Payment> payments) {
+        this.payments = payments;
     }
 
-    public Set<CustomerService> getCustomerServices() {
-        return customerServices;
-    }
-
-    public void setCustomerServices(Set<CustomerService> customerServices) {
-        this.customerServices = customerServices;
-    }
-
-    public Set<Contract> getOwnedContracts() {
-        return ownedContracts;
-    }
-
-    public void setOwnedContracts(Set<Contract> ownedContracts) {
-        this.ownedContracts = ownedContracts;
-    }
-
-    public Set<Contract> getBorrowedContracts() {
+    public List<Contract> getBorrowedContracts() {
         return borrowedContracts;
     }
 
-    public void setBorrowedContracts(Set<Contract> borrowedContracts) {
+    public void setBorrowedContracts(List<Contract> borrowedContracts) {
         this.borrowedContracts = borrowedContracts;
     }
 
-    public Set<Commande> getCommandes() {
-        return commandes;
+    public List<Contract> getOwnedContracts() {
+        return ownedContracts;
     }
 
-    public void setCommandes(Set<Commande> commandes) {
-        this.commandes = commandes;
+    public void setOwnedContracts(List<Contract> ownedContracts) {
+        this.ownedContracts = ownedContracts;
+    }
+
+    public List<CustomerService> getCustomerServices() {
+        return customerServices;
+    }
+
+    public void setCustomerServices(List<CustomerService> customerServices) {
+        this.customerServices = customerServices;
+    }
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
     }
 }
