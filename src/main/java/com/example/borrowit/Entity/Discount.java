@@ -1,6 +1,8 @@
 package com.example.borrowit.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -24,9 +26,16 @@ public class Discount {
 
     private boolean active;
 
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
 
     @OneToMany(mappedBy = "discount")
-    @JsonBackReference
+    @JsonManagedReference(value = "discount-commande")
     private List<Commande> commandes;
 
     public String getName() {
@@ -92,5 +101,9 @@ public class Discount {
     public void setCommandes(List<Commande> commandes) {
         this.commandes = commandes;
     }
+
+    @ManyToOne
+    @JsonBackReference(value = "item-discount")
+    private Item item;  // Assure-toi que cette relation existe et que tu accèdes à l'ID de l'item
 
 }

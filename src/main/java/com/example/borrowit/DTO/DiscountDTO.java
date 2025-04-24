@@ -1,5 +1,6 @@
 package com.example.borrowit.DTO;
 
+import com.example.borrowit.Entity.Discount;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -14,7 +15,16 @@ public class DiscountDTO {
     private LocalDate startDate;
     private LocalDate endDate;
     private boolean active;
-    private List<Long> commandes;
+    private Long item_id;
+    private List<CommandeDTO> commandes;
+
+    public List<CommandeDTO> getCommandes() {
+        return commandes;
+    }
+
+    public void setCommandes(List<CommandeDTO> commandes) {
+        this.commandes = commandes;
+    }
 
     public Long getId() {
         return id;
@@ -72,11 +82,13 @@ public class DiscountDTO {
         this.active = active;
     }
 
-    public List<Long> getCommandes() {
-        return commandes;
+    public Long getItem_id() {
+        return item_id;
     }
 
-    public void setCommandes(List<Long> commandes) {
-        this.commandes = commandes;
+    public void setItem_id(Long item_id) {
+        this.item_id = item_id;
     }
+
+
 }

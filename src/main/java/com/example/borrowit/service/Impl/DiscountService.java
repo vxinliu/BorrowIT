@@ -2,7 +2,9 @@ package com.example.borrowit.service.Impl;
 
 import com.example.borrowit.DTO.DiscountDTO;
 import com.example.borrowit.Entity.Discount;
+import com.example.borrowit.Entity.Item;
 import com.example.borrowit.repository.DiscountRepository;
+import com.example.borrowit.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,8 +15,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DiscountService {
     @Autowired
-
     private  DiscountRepository discountRepository;
+    @Autowired
+    private ItemRepository itemRepository;
 
     // Create a new discount
     public Discount createDiscount(DiscountDTO discountDTO) {
@@ -25,7 +28,10 @@ public class DiscountService {
         discount.setStartDate(discountDTO.getStartDate());
         discount.setEndDate(discountDTO.getEndDate());
         discount.setActive(discountDTO.isActive());
-        return discountRepository.save(discount);
+        // Récupérer l'item et l'associer
+        Item item = itemRepository.findById(discountDTO.getItem_id())
+                .orElseThrow(() -> new RuntimeException("Item not found with ID: " + discountDTO.getItem_id()));
+        discount.setItem(item);        return discountRepository.save(discount);
     }
 
     // Get discount by ID
@@ -50,11 +56,20 @@ public class DiscountService {
         discount.setStartDate(discountDTO.getStartDate());
         discount.setEndDate(discountDTO.getEndDate());
         discount.setActive(discountDTO.isActive());
+        // Mettre à jour l'item si nécessaire
+        Item item = itemRepository.findById(discountDTO.getItem_id())
+                .orElseThrow(() -> new RuntimeException("Item not found with ID: " + discountDTO.getItem_id()));
+        discount.setItem(item);
         return discountRepository.save(discount);
     }
 
     // Delete a discount by ID
     public void deleteDiscount(Long id) {
         discountRepository.deleteById(id);
+    }
+
+
+    public List<Discount> getDiscountsForItemAndActiveStatus(Long itemId, boolean active) {
+        return discountRepository.findByItemIdAndActive(itemId, active);
     }
 }

@@ -2,6 +2,7 @@ package com.example.borrowit.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -21,17 +22,35 @@ public class Item {
     private String itemCondition;
     private boolean availability;
 
+    /*
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @JsonBackReference(value = "item-commande")
+    private Set<Commande> commandes;
+
+    public Set<Commande> getCommandes() {
+        return commandes;
+    }
+
+    public void setCommandes(Set<Commande> commandes) {
+        this.commandes = commandes;
+    }
+*/
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "item-discount")
+    private Set<Discount> discounts;
+
+    public Set<Discount> getDiscounts() {
+        return discounts;
+    }
+
+    public void setDiscounts(Set<Discount> discounts) {
+        this.discounts = discounts;
+    }
+
     public double getPrice() {
         return price;
     }
 
-    public Set<CommandeItem> getCommandeItems() {
-        return commandeItems;
-    }
-
-    public void setCommandeItems(Set<CommandeItem> commandeItems) {
-        this.commandeItems = commandeItems;
-    }
 
     public Set<Feedback> getFeedbacks() {
         return feedbacks;
@@ -102,17 +121,17 @@ public class Item {
     }
 
     @ManyToOne
+    @JsonIgnoreProperties("items") // Ignorer les items de l’utilisateur pour éviter la récursivité
     private User owner;
 
+
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference(value = "item-category")
     private Category category;
 
     @OneToMany
     private Set<Feedback> feedbacks;
 
-    @JsonManagedReference // On marque la relation comme "parent" dans la sérialisation
-    @OneToMany(mappedBy = "item")
-    private Set<CommandeItem> commandeItems;
+
 
 }

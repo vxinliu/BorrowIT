@@ -20,9 +20,10 @@ public class Category {
     private String description;
 
     @OneToMany(mappedBy = "category")
-    @JsonManagedReference
+    @JsonManagedReference(value = "item-category")
     private Set<Item> items;
-public enum CategoryType {
+
+    public enum CategoryType {
         ELECTRONICS, FURNITURE, CLOTHING, BOOKS, OTHER
     }
 }

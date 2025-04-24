@@ -1,10 +1,13 @@
-package com.example.borrowit.controller;
+package com.example.borrowit.Controller;
 
 import com.example.borrowit.DTO.DiscountDTO;
 import com.example.borrowit.Entity.Discount;
+import com.example.borrowit.repository.DiscountRepository;
 import com.example.borrowit.service.Impl.DiscountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +20,7 @@ public class DiscountController {
     @Autowired
 
     private  DiscountService discountService;
-
+    private DiscountRepository discountRepository;
     // Create a new discount
     @PostMapping("/add-discounts")
     public DiscountDTO createDiscount(@RequestBody DiscountDTO discountDTO) {
@@ -53,6 +56,28 @@ public class DiscountController {
     public void deleteDiscount(@PathVariable Long id) {
         discountService.deleteDiscount(id);
     }
+    /* Route pour obtenir les discounts actifs pour un item
+    @GetMapping("/item/{itemId}/active")
+    public List<DiscountDTO> getActiveDiscountsForItem(@PathVariable Long itemId) {
+        List<Discount> discounts = discountService.getActiveDiscountsForItem(itemId);
+        return discounts.stream()
+                .map(this::mapToDiscountDTO)
+                .collect(Collectors.toList());
+    }*/
+    // Méthode pour obtenir les discounts associés à un item spécifique
+    @GetMapping("/item/{itemId}/active:{active}")
+    public ResponseEntity<List<Discount>> getActiveDiscountsForItem(
+            @PathVariable Long itemId,
+            @PathVariable boolean active) {
+
+        List<Discount> discounts = discountService.getDiscountsForItemAndActiveStatus(itemId, active);
+
+        if (discounts.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        return ResponseEntity.ok(discounts);
+    }
 
     // Convert Discount entity to DiscountDTO
     private DiscountDTO mapToDiscountDTO(Discount discount) {
@@ -64,6 +89,7 @@ public class DiscountController {
         discountDTO.setStartDate(discount.getStartDate());
         discountDTO.setEndDate(discount.getEndDate());
         discountDTO.setActive(discount.isActive());
+        discountDTO.setItem_id(discount.getItem() != null ? discount.getItem().getId() : null);
         return discountDTO;
     }
 }

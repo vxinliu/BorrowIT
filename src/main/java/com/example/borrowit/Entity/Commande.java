@@ -82,29 +82,27 @@ public class Commande {
         this.user = user;
     }
 
-
-    public List<CommandeItem> getCommandeItems() {
-        return commandeItems;
+    public Item getItem() {
+        return item;
     }
 
-    public void setCommandeItems(List<CommandeItem> commandeItems) {
-        this.commandeItems = commandeItems;
+    public void setItem(Item item) {
+        this.item = item;
     }
-
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "discount_id")
-    //@JsonBackReference
+    @JsonBackReference(value = "discount-commande")
     private Discount discount;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
 
-    // Une commande peut contenir plusieurs items via CommandeItem
-    @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<CommandeItem> commandeItems;
 
 }

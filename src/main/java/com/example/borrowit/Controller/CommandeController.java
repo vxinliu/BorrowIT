@@ -1,9 +1,8 @@
-package com.example.borrowit.controller;
+package com.example.borrowit.Controller;
 
-import com.example.borrowit.DTO.CreateCommandeRequest;
+import com.example.borrowit.DTO.CommandeRequest;
 import com.example.borrowit.Entity.*;
 import com.example.borrowit.service.*;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,68 +16,43 @@ public class CommandeController {
     @Autowired
     private CommandeService commandeService;
 
-    // Récupérer toutes les commandes
+    @PostMapping("/add-commandes")
+    public ResponseEntity<Commande> createCommande(@RequestBody CommandeRequest request) {
+        Commande commande = commandeService.createCommande(
+                request.getItemId(),
+                request.getUserId(),
+                request.getDescription()
+
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(commande);
+    }
+
+
+
     @GetMapping("/get-commandes")
     public List<Commande> getAllCommandes() {
         return commandeService.getAllCommandes();
     }
 
-    // Récupérer une commande par ID
     @GetMapping("/{id}")
-    public Commande getCommandeById(@PathVariable Long id) {
-        return commandeService.getCommandeById(id);
-    }
+    public ResponseEntity<Commande> getCommandeById(@PathVariable Long id) {
+        Commande commande = commandeService.getCommandeById(id);
 
-    // Créer une nouvelle commande
-    @PostMapping("/add-commandes")
-    public ResponseEntity<?> createCommande(@RequestBody CreateCommandeRequest request) {
-        try {
-            // Vérifie si la liste des items est nulle
-            if (request.getItems() == null || request.getItems().isEmpty()) {
-                return ResponseEntity.badRequest().body("Erreur : la commande doit contenir au moins un item.");
-            }
-
-            Commande commande = commandeService.saveCommande(request);
-            return ResponseEntity.ok(commande);
-
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erreur : " + e.getMessage());
-
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erreur : " + e.getMessage());
+        if (commande == null) {
+            return ResponseEntity.notFound().build();  // Retourner 404 si commande n'existe pas
         }
-    }
 
-
-    // Mettre à jour une commande
-    @PutMapping("/{id}")
-    public Commande updateCommande(@PathVariable Long id, @RequestBody Commande updatedCommande) {
-        return commandeService.updateCommande(id, updatedCommande);
+        return ResponseEntity.ok(commande);  // Retourner 200 OK avec la commande
     }
+    /*// CommandeController.java
+    @PutMapping("/confirm/{id}")
+    public ResponseEntity<String> confirmCommande(@PathVariable Long id) {
+        commandeService.confirmCommande(id);
+        return ResponseEntity.ok("Commande confirmée et SMS envoyé !");
+    }*/
 
-    // Supprimer une commande
-    @DeleteMapping("/{id}")
-    public void deleteCommande(@PathVariable Long id) {
-        commandeService.deleteCommande(id);
-    }
+}
 
-    // Appliquer une remise à une commande
-    @PutMapping("/{commandeId}/discount/{discountId}")
-    public Commande applyDiscountToCommande(@PathVariable Long commandeId, @PathVariable Long discountId) {
-        return commandeService.applyDiscountToCommande(commandeId, discountId);
-    }
-
-    // Calculer le prix total avec la remise appliquée
-    @GetMapping("/{commandeId}/calculate-total")
-    public double calculateTotalPrice(@PathVariable Long commandeId) {
-        return commandeService.calculateTotalPrice(commandeId);
-    }
-
-    // Rechercher les commandes par intervalle de dates
-    @GetMapping("/search-by-date")
-    public List<Commande> getCommandesByDateRange(@RequestParam Date startDate, @RequestParam Date endDate) {
-        return commandeService.getCommandesByDateRange(startDate, endDate);
-    }
 /*
 import com.example.borrowit.DTO.CommandeDTO;
 import com.example.borrowit.DTO.CreateCommandeRequest;
@@ -166,7 +140,7 @@ public class CommandeController {
 
         return ResponseEntity.ok(result);
     }*/
-}
+
 
 
 
