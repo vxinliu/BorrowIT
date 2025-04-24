@@ -9,6 +9,5 @@ import java.util.Optional;
 public interface DiscountRepository extends JpaRepository<Discount, Long> {
     Optional<Discount> findByItemIdAndActiveTrue(Long id);
     Optional<Discount> findFirstByItemIdAndActiveTrue(Long itemId);
-
     List<Discount> findByItemIdAndActive(Long itemId, boolean active);
 }

@@ -6,6 +6,5 @@ import java.util.*;
 
 public interface CommandeRepository extends JpaRepository<Commande, Long> {
     //List<Commande> findByUserId(Long userId);
-    List<Commande> findByCreatedDateBetween(Date startDate, Date endDate);
 
 }

@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults()) // Nouvelle syntaxe recommandée pour activer CORS
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/users/**").permitAll()
+                        .requestMatchers("/users/**").permitAll()
                         .requestMatchers("/items/**").permitAll()
                         .requestMatchers("/commandes/**").permitAll()
                         .requestMatchers("/discounts/**").permitAll()
