@@ -40,6 +40,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/users/**").permitAll()
+                        .requestMatchers("/api/users/image/**").permitAll()
+
                         .requestMatchers("/api/forgot-password", "/api/reset-password").permitAll()
                         .requestMatchers("/api/test/auth-status").authenticated()
                         .anyRequest().authenticated()

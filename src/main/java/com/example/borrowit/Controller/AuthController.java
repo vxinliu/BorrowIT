@@ -42,6 +42,7 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody User user) {
         try {
             logger.info("Attempting to authenticate user with email: {}", user.getEmail());
+            logger.debug("Password received: {}", user.getPassword()); // Log du mot de passe reçu
 
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));

@@ -22,6 +22,10 @@ public class User {
     @Column(nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'Active'")
     private String status = "Active";
     private String dateDeNaissance;
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] image;
+
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -118,6 +122,13 @@ public class User {
 
     public String getPhone() {
         return phone;
+    }
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
     public void setPhone(String phone) {
