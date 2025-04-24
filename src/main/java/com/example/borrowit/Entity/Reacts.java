@@ -17,7 +17,7 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Reacts implements Serializable {
     @Serial
-    private static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,29 +31,20 @@ public class Reacts implements Serializable {
     @ManyToOne
     private User user;
 
-
     @ManyToOne
     @JsonBackReference
     private Feedback feedback;
 
-    public enum Reaction {
-        LIKE, DISLIKE, LOVE, LAUGH, SAD, ANGRY
+    public User getUser() {
+        return user;
+    }
+
+    public void setFeedback(Feedback feedback) {
+        this.feedback = feedback;
     }
 
     public Long getId() {
         return id;
-    }
-
-    public Reaction getReaction() {
-        return reaction;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public User getUser() {
-        return user;
     }
 
     public void setId(Long id) {
@@ -72,11 +63,19 @@ public class Reacts implements Serializable {
         this.user = user;
     }
 
-    public void setFeedback(Feedback feedback) {
-        this.feedback = feedback;
+    public Reaction getReaction() {
+        return reaction;
+    }
+
+    public Date getDate() {
+        return date;
     }
 
     public Feedback getFeedback() {
         return feedback;
+    }
+
+    public enum Reaction {
+        LIKE, DISLIKE, LOVE, LAUGH, SAD, ANGRY
     }
 }

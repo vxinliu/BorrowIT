@@ -1,7 +1,5 @@
 package com.example.borrowit.Entity;
 
-
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -10,7 +8,6 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
 import java.util.List;
 
 @Entity
@@ -21,24 +18,27 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Feedback implements Serializable {
     @Serial
-    private static final long serialVersionUID=1L;
-
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String message;
-
     private LocalDateTime date;
 
-    //@ManyToOne
-    //private Item item;
+    // @ManyToOne
+    // private Item item;
+
     @ManyToOne
     private User user;
+
     @OneToMany(mappedBy = "feedback", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Reacts> reacts;
+
+    private boolean reported;
+    private String reason;
 
     public Long getId() {
         return id;
@@ -51,10 +51,6 @@ public class Feedback implements Serializable {
     public LocalDateTime getDate() {
         return date;
     }
-
-    //public Item getItem() {
-        //return item;
-    //}
 
     public List<Reacts> getReacts() {
         return reacts;
@@ -72,16 +68,10 @@ public class Feedback implements Serializable {
         this.date = date;
     }
 
-    //public void setItem(Item item) {
-      //  this.item = item;
-    //}
-
     public void setReacts(List<Reacts> reacts) {
         this.reacts = reacts;
     }
-    private boolean reported;
 
-    // getters and setters for reported
     public boolean isReported() {
         return reported;
     }
@@ -89,8 +79,6 @@ public class Feedback implements Serializable {
     public void setReported(boolean reported) {
         this.reported = reported;
     }
-
-    private String reason;
 
     public void setUser(User user) {
         this.user = user;

@@ -1,8 +1,8 @@
 package com.example.borrowit.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,10 +20,8 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
-    @OneToOne
-    @JoinColumn(name = "contract_id")
-    @JsonIgnore
-    private Contract contract;
+    @ManyToOne
+    private User user;
 
     public enum PaymentStatus {
         PENDING, COMPLETED, FAILED

@@ -5,7 +5,6 @@ import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
 
 @Entity
 @Getter
@@ -15,6 +14,7 @@ import java.util.List;
 public class Item implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,13 +27,9 @@ public class Item implements Serializable {
     @ManyToOne
     private User owner;
 
-    public Long getId() {
-        return id;
-    }
-
     @ManyToOne
     private Category category;
 
-    //@OneToMany(mappedBy = "item",cascade=CascadeType.ALL)
-   // private List<Feedback> feedbacks;
+    // @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    // private List<Feedback> feedbacks;
 }
