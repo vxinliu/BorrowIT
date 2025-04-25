@@ -1,12 +1,9 @@
 package com.example.borrowit.Entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import java.util.List;
 import java.util.Set;
 
 @Entity
-@Data
 public class User {
 
     @Id
@@ -21,18 +18,20 @@ public class User {
     private String password;
     private String phone;
     private String address;
-    private String genre;  // Added genre field
+    private String genre;  // Champ genre ajouté
     @Column(nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'Active'")
     private String status = "Active";
     private String dateDeNaissance;
-
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] image;
 
+
     @Enumerated(EnumType.STRING)
     private Role role;
     private String verificationCode;
+
+
 
     @OneToMany(mappedBy = "owner")
     private Set<Item> items;
@@ -61,11 +60,13 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<Notification> notifications;
 
+    // Enum Role pour définir les rôles de l'utilisateur
     public enum Role {
         ADMIN, BORROWER, OWNER
     }
 
-    // Getters and Setters
+    // Getters et Setters
+
     public Long getId() {
         return id;
     }
@@ -85,7 +86,14 @@ public class User {
     public String getName() {
         return name;
     }
+    public String getStatus() {
+        return status; // CORRECTION: Retourne le champ status, pas name
 
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
     public void setName(String name) {
         this.name = name;
     }
@@ -101,13 +109,26 @@ public class User {
     public String getPassword() {
         return password;
     }
+    public String getVerificationCode() {
+        return verificationCode;
+    }
 
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+    }
     public void setPassword(String password) {
         this.password = password;
     }
 
     public String getPhone() {
         return phone;
+    }
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
     public void setPhone(String phone) {
@@ -136,30 +157,6 @@ public class User {
 
     public void setDateDeNaissance(String dateDeNaissance) {
         this.dateDeNaissance = dateDeNaissance;
-    }
-
-    public byte[] getImage() {
-        return image;
-    }
-
-    public void setImage(byte[] image) {
-        this.image = image;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getVerificationCode() {
-        return verificationCode;
-    }
-
-    public void setVerificationCode(String verificationCode) {
-        this.verificationCode = verificationCode;
     }
 
     public Role getRole() {
