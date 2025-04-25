@@ -25,6 +25,11 @@ public class Payment {
     @JsonIgnore
     private Contract contract;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id") // Adjust to match your database schema
+    @JsonIgnore
+    private User user; // This is the missing field
+
     public enum PaymentStatus {
         PENDING, COMPLETED, FAILED
     }

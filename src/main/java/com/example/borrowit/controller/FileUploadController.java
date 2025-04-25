@@ -11,15 +11,15 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/cloud")
 @CrossOrigin("*")
 public class FileUploadController {
 
     private final FileUploadService fileUpload;
 
-
-
+    public FileUploadController(FileUploadService fileUpload) {
+        this.fileUpload = fileUpload;
+    }
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("image") MultipartFile multipartFile) {
@@ -31,4 +31,7 @@ public class FileUploadController {
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Une erreur s'est produite lors du téléchargement de l'image.");
         }
-    }}
+    }
+}
+
+
