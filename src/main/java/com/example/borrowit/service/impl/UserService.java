@@ -39,11 +39,12 @@ public class UserService implements UserDetailsService {
     }
 
     public User saveUser(User user) {
-        if (user.getPassword() != null && !user.getPassword().isEmpty() && !user.getPassword().startsWith("$2a$")) {
-            user.setPassword(passwordEncoder.encode(user.getPassword())); // Encode password only if it is not already encoded
+        if (user.getPassword() != null && !user.getPassword().startsWith("$2a$")) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         return userRepository.save(user);
     }
+
 
     public User updateUser(Long id, User updatedUser) {
         return userRepository.findById(id).map(existingUser -> {

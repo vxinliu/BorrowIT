@@ -15,6 +15,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGeneralException(Exception ex) {
-        return ResponseEntity.internalServerError().body("Une erreur est survenue.");
+        ex.printStackTrace();
+        return ResponseEntity.internalServerError().body("Une erreur est survenue."+ ex.getMessage());
     }
+
+
+
 }

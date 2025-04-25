@@ -1,5 +1,6 @@
 package com.example.borrowit.controller;
 
+import com.example.borrowit.DTO.FeedbackDTO;
 import com.example.borrowit.Entity.Feedback;
 import com.example.borrowit.service.IFeedbackService;
 import com.example.borrowit.service.IReactsService;
@@ -22,9 +23,13 @@ public class FeedbackController {
 
     // Retrieve all feedbacks
     @GetMapping("/retrieve-all-feedbacks")
-    public List<Feedback> getFeedbacks() {
-        return feedbackService.retrieveAllFeedbacks();
+    public List<FeedbackDTO> getFeedbacks() {
+        return feedbackService.retrieveAllFeedbacks()
+                .stream()
+                .map(FeedbackDTO::new)
+                .toList();
     }
+
 
     // Retrieve a single feedback by ID
     @GetMapping("/retrieve-feedback/{id}")

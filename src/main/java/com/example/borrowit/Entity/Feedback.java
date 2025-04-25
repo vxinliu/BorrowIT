@@ -1,5 +1,6 @@
 package com.example.borrowit.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -31,6 +32,7 @@ public class Feedback implements Serializable {
     // private Item item;
 
     @ManyToOne
+    @JsonBackReference
     private User user;
 
     @OneToMany(mappedBy = "feedback", cascade = CascadeType.ALL)

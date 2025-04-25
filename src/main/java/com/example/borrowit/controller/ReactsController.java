@@ -1,5 +1,6 @@
 package com.example.borrowit.controller;
 
+import com.example.borrowit.DTO.ReactDTO;
 import com.example.borrowit.Entity.Feedback;
 import com.example.borrowit.Entity.Reacts;
 import com.example.borrowit.service.IReactsService;
@@ -18,9 +19,10 @@ public class ReactsController {
     public IReactsService reactsService;
 
     @GetMapping("/retrieve-all-reacts")
-    public ResponseEntity<List<Reacts>> getAllReacts() {
-        List<Reacts> reacts = reactsService.retrieveAllReacts();
-        return ResponseEntity.ok(reacts);
+    public ResponseEntity<List<ReactDTO>> getAllReacts() {
+        List<ReactDTO> dtoList = reactsService.retrieveAllReacts()
+                .stream().map(ReactDTO::new).toList();
+        return ResponseEntity.ok(dtoList);
     }
     @GetMapping("/retrieve-react/{reactsId}")
     public Reacts getReactById(@PathVariable Long reactsId) {
@@ -28,8 +30,10 @@ public class ReactsController {
     }
 
     @PostMapping("/add-react")
-    public Reacts addReact(@RequestBody Reacts react) {
-        return reactsService.addReact(react);
+    public ResponseEntity<ReactDTO> addReact(@RequestBody Reacts react) {
+        Reacts savedReact = reactsService.addReact(react);
+        ReactDTO dto = new ReactDTO(savedReact);
+        return ResponseEntity.ok(dto);
     }
 
     @PutMapping("/modify-react")

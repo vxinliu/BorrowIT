@@ -1,5 +1,6 @@
 package com.example.borrowit.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.List;
@@ -15,8 +16,8 @@ public class User {
 
     private Long cin;
     private String name;
-
     @Column(unique = true)
+
     private String email;
     private String password;
     private String phone;
@@ -44,6 +45,7 @@ public class User {
     private Set<Review> reviews;
 
     @OneToMany(mappedBy = "user")
+    @JsonManagedReference
     private Set<Feedback> feedbacks;
 
     @OneToMany(mappedBy = "user")
