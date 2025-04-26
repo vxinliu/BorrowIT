@@ -29,10 +29,12 @@ public class Reacts implements Serializable {
 
     private Date date;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "feedback_id")
     @JsonBackReference
     private Feedback feedback;
 

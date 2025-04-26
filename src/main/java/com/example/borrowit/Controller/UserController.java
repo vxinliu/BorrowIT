@@ -1,4 +1,4 @@
-package com.example.borrowit.Controller;
+package com.example.borrowit.controller;
 
 import com.example.borrowit.Entity.User;
 import com.example.borrowit.service.impl.SmsService;

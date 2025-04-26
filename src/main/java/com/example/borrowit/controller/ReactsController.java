@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -52,6 +54,24 @@ public class ReactsController {
         long reactionCount = reactsService.countReactionsForFeedback(feedbackId);
         return ResponseEntity.ok(reactionCount);
     }
+    @GetMapping("/retrieve-reacts-for-feedback/{feedbackId}")
+    public ResponseEntity<List<ReactDTO>> getReactsForFeedback(@PathVariable Long feedbackId) {
+        try {
+            List<Reacts> reacts = reactsService.getReactsForFeedback(feedbackId);
 
+            // Return empty array instead of null
+            if (reacts == null || reacts.isEmpty()) {
+                return ResponseEntity.ok(Collections.emptyList());
+            }
+
+            List<ReactDTO> dtos = reacts.stream()
+                    .map(ReactDTO::new)
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(dtos);
+        } catch (Exception e) {
+            return ResponseEntity.ok(Collections.emptyList()); // Return empty array on error
+        }
+    }
 
 }

@@ -31,7 +31,7 @@ public class FeedbackServiceImpl implements IFeedbackService {
     @Transactional
     public List<Feedback> retrieveAllFeedbacks() {
 
-         return feedbackRepository.findAll();
+         return feedbackRepository.findAllWithUser();
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -45,8 +46,20 @@ public class FeedbackController {
 
     // Update an existing feedback
     @PutMapping("/update-feedback")
-    public Feedback updateFeedback(@RequestBody Feedback f) {
-        return feedbackService.modifyFeedback(f);
+    public ResponseEntity<Map<String, Object>> updateFeedback(@RequestBody Feedback feedback) {
+        try {
+            Feedback updatedFeedback = feedbackService.modifyFeedback(feedback);
+            return ResponseEntity.ok().body(Map.of(
+                    "success", true,
+                    "message", "Feedback updated successfully",
+                    "data", updatedFeedback
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+            ));
+        }
     }
 
     // Delete a feedback by ID
@@ -93,6 +106,8 @@ public class FeedbackController {
             return ResponseEntity.status(404).body("Feedback not found");
         }
     }
+
+
 
 
 

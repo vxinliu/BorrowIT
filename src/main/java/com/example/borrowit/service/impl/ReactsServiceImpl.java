@@ -10,7 +10,9 @@ import jakarta.persistence.Query;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -79,9 +81,11 @@ public class ReactsServiceImpl implements IReactsService {
         return (long) query.getSingleResult();
     }
 
-
-
-
+    @Override
+    @Transactional(readOnly = true)
+    public List<Reacts> getReactsForFeedback(Long feedbackId) {
+        return reactsRepository.findByFeedbackIdWithUser(feedbackId);
+    }
 
 
 }
