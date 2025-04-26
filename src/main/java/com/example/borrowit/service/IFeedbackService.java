@@ -1,5 +1,6 @@
 package com.example.borrowit.service;
 
+import com.example.borrowit.DTO.FeedbackRequestDTO;
 import com.example.borrowit.Entity.Feedback;
 
 
@@ -10,9 +11,9 @@ public interface IFeedbackService {
     public Feedback retrieveFeedback(Long feedbackId);
     public Feedback addFeedback(Feedback f);
     public void removeFeedback(Long feedbackId);
-    public Feedback modifyFeedback(Feedback f);
     public List<Feedback> getMostReactedFeedbacks(int topN) ;
     public void reportFeedback(Long feedbackId, String reason);
     public List<Feedback> retrieveReportedFeedbacks();
     public Feedback rejectFeedback(Long feedbackId);
+    public Feedback modifyFeedback(FeedbackRequestDTO requestDTO);
 }

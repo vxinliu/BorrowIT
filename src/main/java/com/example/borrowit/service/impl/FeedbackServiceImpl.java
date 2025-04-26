@@ -1,5 +1,6 @@
 package com.example.borrowit.service.impl;
 
+import com.example.borrowit.DTO.FeedbackRequestDTO;
 import com.example.borrowit.Entity.Feedback;
 import com.example.borrowit.Entity.User;
 import com.example.borrowit.repository.FeedbackRepository;
@@ -72,14 +73,6 @@ public class FeedbackServiceImpl implements IFeedbackService {
 
 
 
-    @Override
-    public Feedback modifyFeedback(Feedback f) {
-        if (feedbackRepository.existsById(f.getId())) {
-            return feedbackRepository.save(f);
-        } else {
-            throw new RuntimeException("Feedback not found with ID: " + f.getId());
-        }
-    }
 
     @Override
     public List<Feedback> getMostReactedFeedbacks(int topN) {
@@ -122,6 +115,26 @@ public class FeedbackServiceImpl implements IFeedbackService {
         } else {
             throw new RuntimeException("Feedback not found with ID: " + feedbackId);
         }
+    }
+
+    @Override
+    public Feedback modifyFeedback(FeedbackRequestDTO requestDTO) {
+        return feedbackRepository.findById(requestDTO.getId())
+                .map(existing -> {
+                    // Update only allowed fields
+                    existing.setMessage(requestDTO.getMessage());
+
+                    // Update user if changed
+                    if (requestDTO.getUserId() != null &&
+                            !requestDTO.getUserId().equals(existing.getUser().getId())) {
+                        User user = userRepository.findById(requestDTO.getUserId())
+                                .orElseThrow(() -> new RuntimeException("User not found"));
+                        existing.setUser(user);
+                    }
+
+                    return feedbackRepository.save(existing);
+                })
+                .orElseThrow(() -> new RuntimeException("Feedback not found"));
     }
 
 

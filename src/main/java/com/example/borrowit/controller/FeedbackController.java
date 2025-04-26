@@ -1,6 +1,7 @@
 package com.example.borrowit.controller;
 
 import com.example.borrowit.DTO.FeedbackDTO;
+import com.example.borrowit.DTO.FeedbackRequestDTO;
 import com.example.borrowit.Entity.Feedback;
 import com.example.borrowit.service.IFeedbackService;
 import com.example.borrowit.service.IReactsService;
@@ -46,19 +47,12 @@ public class FeedbackController {
 
     // Update an existing feedback
     @PutMapping("/update-feedback")
-    public ResponseEntity<Map<String, Object>> updateFeedback(@RequestBody Feedback feedback) {
+    public ResponseEntity<FeedbackDTO> updateFeedback(@RequestBody FeedbackRequestDTO requestDTO) {
         try {
-            Feedback updatedFeedback = feedbackService.modifyFeedback(feedback);
-            return ResponseEntity.ok().body(Map.of(
-                    "success", true,
-                    "message", "Feedback updated successfully",
-                    "data", updatedFeedback
-            ));
+            Feedback updatedFeedback = feedbackService.modifyFeedback(requestDTO);
+            return ResponseEntity.ok(new FeedbackDTO(updatedFeedback));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "message", e.getMessage()
-            ));
+            return ResponseEntity.badRequest().build();
         }
     }
 
