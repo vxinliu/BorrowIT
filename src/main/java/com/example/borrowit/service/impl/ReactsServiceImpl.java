@@ -87,5 +87,36 @@ public class ReactsServiceImpl implements IReactsService {
         return reactsRepository.findByFeedbackIdWithUser(feedbackId);
     }
 
+    @Override
+    @Transactional
+    public Reacts addOrUpdateReaction(Long feedbackId, Long userId, Reacts.Reaction reaction) {
+        // Check if reaction already exists
+        Optional<Reacts> existingReact = reactsRepository.findByFeedbackIdAndUserId(feedbackId, userId);
+
+        if (existingReact.isPresent()) {
+            // Update existing reaction
+            Reacts react = existingReact.get();
+            react.setReaction(reaction);
+            react.setDate(new Date());
+            return reactsRepository.save(react);
+        } else {
+            // Create new reaction
+            Reacts newReact = new Reacts();
+            newReact.setReaction(reaction);
+            newReact.setDate(new Date());
+            newReact.setUser(userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found")));
+            newReact.setFeedback(feedbackRepository.findById(feedbackId)
+                    .orElseThrow(() -> new RuntimeException("Feedback not found")));
+            return reactsRepository.save(newReact);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void removeReaction(Long feedbackId, Long userId) {
+        reactsRepository.deleteByFeedbackIdAndUserId(feedbackId, userId);
+    }
+
 
 }

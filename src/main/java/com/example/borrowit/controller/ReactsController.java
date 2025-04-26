@@ -1,6 +1,7 @@
 package com.example.borrowit.controller;
 
 import com.example.borrowit.DTO.ReactDTO;
+import com.example.borrowit.DTO.ReactionRequest;
 import com.example.borrowit.Entity.Feedback;
 import com.example.borrowit.Entity.Reacts;
 import com.example.borrowit.service.IReactsService;
@@ -72,6 +73,24 @@ public class ReactsController {
         } catch (Exception e) {
             return ResponseEntity.ok(Collections.emptyList()); // Return empty array on error
         }
+    }
+
+    @PostMapping("/react")
+    public ResponseEntity<ReactDTO> addOrUpdateReaction(
+            @RequestBody ReactionRequest request) {
+        Reacts react = reactsService.addOrUpdateReaction(
+                request.getFeedbackId(),
+                request.getUserId(),
+                request.getReactionType());
+        return ResponseEntity.ok(new ReactDTO(react));
+    }
+
+    @DeleteMapping("/react")
+    public ResponseEntity<Void> removeReaction(
+            @RequestParam Long feedbackId,
+            @RequestParam Long userId) {
+        reactsService.removeReaction(feedbackId, userId);
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -15,4 +15,8 @@ public interface IReactsService {
     public List<Reacts> getReactsForFeedback(Long feedbackId);
 
     // Here we will add later methods calling keywords and methods calling JPQL
+
+
+    Reacts addOrUpdateReaction(Long feedbackId, Long userId, Reacts.Reaction reaction);
+    void removeReaction(Long feedbackId, Long userId);
 }
