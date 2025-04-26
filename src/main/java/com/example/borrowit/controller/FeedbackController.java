@@ -5,6 +5,7 @@ import com.example.borrowit.DTO.FeedbackRequestDTO;
 import com.example.borrowit.Entity.Feedback;
 import com.example.borrowit.service.IFeedbackService;
 import com.example.borrowit.service.IReactsService;
+import com.example.borrowit.service.impl.BadWordFilterService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +16,18 @@ import java.util.Map;
 
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("/feedbacks")
 public class FeedbackController {
 
     @Autowired
     public IFeedbackService feedbackService;
     public IReactsService reactsService;
+    private final BadWordFilterService badWordFilterService;
+    public FeedbackController(IFeedbackService feedbackService, IReactsService reactsService, BadWordFilterService badWordFilterService) {
+        this.feedbackService = feedbackService;
+        this.reactsService = reactsService;
+        this.badWordFilterService = badWordFilterService;
+    }
 
     // Retrieve all feedbacks
     @GetMapping("/retrieve-all-feedbacks")
@@ -40,10 +46,10 @@ public class FeedbackController {
     }
 
     // Add a new feedback with associated reacts
-    @PostMapping("/add-feedback")
+   /* @PostMapping("/add-feedback")
     public Feedback addFeedback(@RequestBody Feedback f) {
         return feedbackService.addFeedback(f);
-    }
+    }*/
 
     // Update an existing feedback
     @PutMapping("/update-feedback")
@@ -99,6 +105,18 @@ public class FeedbackController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(404).body("Feedback not found");
         }
+    }
+
+
+    // Modifiez le endpoint addFeedback
+    @PostMapping("/add-feedback")
+    public ResponseEntity<?> addFeedback(@RequestBody Feedback f) {
+        if (badWordFilterService.containsBadWords(f.getMessage())) {
+            return ResponseEntity.badRequest().body(
+                    Map.of("error", "Le message contient des mots inappropriés")
+            );
+        }
+        return ResponseEntity.ok(feedbackService.addFeedback(f));
     }
 
 
