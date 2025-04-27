@@ -27,6 +27,11 @@ public class Feedback implements Serializable {
 
     private String message;
     private LocalDateTime date;
+    @Column(name = "sentiment_score")
+    private Double sentimentScore;
+
+    @Column(name = "suggested_reaction")
+    private String suggestedReaction;
 
     // @ManyToOne
     // private Item item;
@@ -41,6 +46,22 @@ public class Feedback implements Serializable {
 
     private boolean reported;
     private String reason;
+
+    public void setSentimentScore(Double sentimentScore) {
+        this.sentimentScore = sentimentScore;
+    }
+
+    public void setSuggestedReaction(String suggestedReaction) {
+        this.suggestedReaction = suggestedReaction;
+    }
+
+    public Double getSentimentScore() {
+        return sentimentScore;
+    }
+
+    public String getSuggestedReaction() {
+        return suggestedReaction;
+    }
 
     public Long getId() {
         return id;

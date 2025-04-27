@@ -41,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/users/**").permitAll()
                         .requestMatchers("/api/users/image/**").permitAll()
+                        .requestMatchers("/feedbacks/**").authenticated() // Add this line
 
                         .requestMatchers("/api/forgot-password", "/api/reset-password").permitAll()
                         .requestMatchers("/api/test/auth-status").authenticated()

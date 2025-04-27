@@ -2,15 +2,23 @@ package com.example.borrowit.controller;
 
 import com.example.borrowit.DTO.FeedbackDTO;
 import com.example.borrowit.DTO.FeedbackRequestDTO;
+import com.example.borrowit.DTO.SentimentAnalysis;
 import com.example.borrowit.Entity.Feedback;
 import com.example.borrowit.service.IFeedbackService;
 import com.example.borrowit.service.IReactsService;
 import com.example.borrowit.service.impl.BadWordFilterService;
+import com.example.borrowit.service.impl.SentimentAnalysisService;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -23,10 +31,13 @@ public class FeedbackController {
     public IFeedbackService feedbackService;
     public IReactsService reactsService;
     private final BadWordFilterService badWordFilterService;
-    public FeedbackController(IFeedbackService feedbackService, IReactsService reactsService, BadWordFilterService badWordFilterService) {
+    private final SentimentAnalysisService sentimentAnalysisService;
+    private static final Logger log = LoggerFactory.getLogger(SentimentAnalysisService.class);
+    public FeedbackController(IFeedbackService feedbackService, IReactsService reactsService, BadWordFilterService badWordFilterService,SentimentAnalysisService sentimentAnalysisService) {
         this.feedbackService = feedbackService;
         this.reactsService = reactsService;
         this.badWordFilterService = badWordFilterService;
+        this.sentimentAnalysisService=sentimentAnalysisService;
     }
 
     // Retrieve all feedbacks
@@ -110,17 +121,63 @@ public class FeedbackController {
 
     // Modifiez le endpoint addFeedback
     @PostMapping("/add-feedback")
-    public ResponseEntity<?> addFeedback(@RequestBody Feedback f) {
-        if (badWordFilterService.containsBadWords(f.getMessage())) {
-            return ResponseEntity.badRequest().body(
-                    Map.of("error", "Le message contient des mots inappropriés")
-            );
+    public ResponseEntity<?> addFeedback(
+            @RequestBody Feedback feedback,
+            @RequestHeader("Authorization") String authHeader) {
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            log.warn("Unauthorized access attempt");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.ok(feedbackService.addFeedback(f));
+
+        if (badWordFilterService.containsBadWords(feedback.getMessage())) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Inappropriate language detected"));
+        }
+
+        try {
+            log.info("Analyzing sentiment for message: {}", feedback.getMessage());
+
+            SentimentAnalysis analysis = sentimentAnalysisService.analyze(feedback.getMessage())
+                    .block(Duration.ofSeconds(15));
+
+            // Assurez-vous que l'analyse n'est pas null
+            if (analysis == null) {
+                analysis = new SentimentAnalysis("NEUTRAL", 0.5);
+            }
+
+            log.info("Final analysis - Label: {}, Score: {}", analysis.getLabel(), analysis.getScore());
+
+            feedback.setSentimentScore(analysis.getScore());
+            feedback.setSuggestedReaction(determineReaction(analysis));
+            feedback.setDate(LocalDateTime.now());
+
+            Feedback savedFeedback = feedbackService.addFeedback(feedback);
+            return ResponseEntity.ok(savedFeedback);
+
+        } catch (Exception e) {
+            log.error("Error processing feedback, using default values", e);
+            feedback.setSentimentScore(0.5);
+            feedback.setSuggestedReaction("NEUTRAL");
+            feedback.setDate(LocalDateTime.now());
+
+            Feedback savedFeedback = feedbackService.addFeedback(feedback);
+            return ResponseEntity.ok(savedFeedback);
+        }
     }
 
+    private String determineReaction(SentimentAnalysis analysis) {
+        if (analysis == null) {
+            return "NEUTRAL";
+        }
 
-
+        if ("POSITIVE".equalsIgnoreCase(analysis.getLabel())) {
+            return analysis.getScore() > 0.85 ? "LOVE" : "LIKE";
+        } else if ("NEGATIVE".equalsIgnoreCase(analysis.getLabel())) {
+            return analysis.getScore() > 0.85 ? "ANGRY" : "SAD";
+        }
+        return "NEUTRAL";
+    }
 
 
 
