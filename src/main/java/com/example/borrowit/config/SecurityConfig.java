@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers("/contracts/**").permitAll()
                         .requestMatchers("/contracts/user/**").permitAll()
                         .requestMatchers("/payments/**").permitAll()
+                        .requestMatchers("/payments/by-contract/**").permitAll()
                         .requestMatchers("/payments/confirm/**").permitAll()
 
                         .requestMatchers("/stripe/**").permitAll()

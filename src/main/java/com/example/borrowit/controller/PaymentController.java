@@ -25,7 +25,7 @@ import java.util.Map;
 public class PaymentController {
 
     @Autowired
-    private PaymentService paymentService;
+    private PaymentServiceImpl paymentService;
     @Autowired
     private ContractRepository contractRepository;
     @Autowired
@@ -109,5 +109,9 @@ public class PaymentController {
             return ResponseEntity.internalServerError()
                     .body(Map.of("error", "Erreur technique: " + e.getMessage()));
         }
+    }
+    @GetMapping("/by-contract/{contractId}")
+    public Payment getPaymentByContractId(@PathVariable Long contractId) {
+        return paymentService.getPaymentByContractId(contractId);
     }
 }

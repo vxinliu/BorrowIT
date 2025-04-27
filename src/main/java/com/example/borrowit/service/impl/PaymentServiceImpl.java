@@ -105,5 +105,10 @@ public class PaymentServiceImpl implements PaymentService {
         }
         paymentRepository.deleteById(id);
     }
+    public Payment getPaymentByContractId(Long contractId) {
+        return paymentRepository.findByContractId(contractId)
+                .orElseThrow(() -> new RuntimeException("Aucun paiement trouvé pour le contrat avec ID: " + contractId));
+    }
+
 
 }
