@@ -1,6 +1,7 @@
 package com.example.borrowit.Dto;
 
 import com.example.borrowit.Entity.StatusItem;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 

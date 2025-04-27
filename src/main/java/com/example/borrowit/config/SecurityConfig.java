@@ -10,6 +10,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,16 +36,19 @@ public class SecurityConfig {
         JwtAuthorizationFilter jwtAuthorizationFilter = new JwtAuthorizationFilter(authenticationManager, userService, jwtUtil);
 
         http
-                .csrf(csrf -> csrf.disable()) // Désactivation de CSRF
+                .csrf(AbstractHttpConfigurer::disable) // Désactivation de CSRF
                 .cors(Customizer.withDefaults()) // Nouvelle syntaxe recommandée pour activer CORS
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/users/**").permitAll()
                         .requestMatchers("/api/users/image/**").permitAll()
+//                                .requestMatchers("/cloud/upload").permitAll()
 
                         .requestMatchers("/api/forgot-password", "/api/reset-password").permitAll()
-                        .requestMatchers("/api/test/auth-status").authenticated()
-                        .anyRequest().authenticated()
+//                       .requestMatchers("/api/test/auth-status").authenticated()
+//                        .requestMatchers("/borrowit/api/categories/**").authenticated()
+//                        .requestMatchers("/borrowit/api/items/**").authenticated()
+                        .anyRequest().authenticated()// Allow public access
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)

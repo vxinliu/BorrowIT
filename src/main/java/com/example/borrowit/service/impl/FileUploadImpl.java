@@ -1,5 +1,4 @@
 package com.example.borrowit.service.impl;
-
 import com.cloudinary.Cloudinary;
 import com.example.borrowit.service.FileUploadService;
 import lombok.RequiredArgsConstructor;
@@ -9,17 +8,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
-
 @Service
 public class FileUploadImpl implements FileUploadService {
 
     private final Cloudinary cloudinary;
-
-    // Le constructeur explicite fourni par Lombok (ou tu peux l'écrire manuellement)
-    public FileUploadImpl(Cloudinary cloudinary) {
-        this.cloudinary = cloudinary;
+    public FileUploadImpl(Cloudinary cloudinary){
+        this.cloudinary=cloudinary;
     }
-
     @Override
     public String uploadFile(MultipartFile multipartFile) throws IOException {
         return cloudinary.uploader()
