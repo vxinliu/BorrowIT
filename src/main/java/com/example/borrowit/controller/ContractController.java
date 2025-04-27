@@ -2,6 +2,7 @@ package com.example.borrowit.controller;
 
 import com.example.borrowit.Entity.Contract;
 import com.example.borrowit.service.ContractService;
+import com.example.borrowit.service.impl.ContractServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import java.util.List;
 
 public class ContractController {
     @Autowired
-    private ContractService contractService;
+    private ContractServiceImpl contractService;
 
 
     // Création d'un contrat
@@ -23,12 +24,14 @@ public class ContractController {
     public ResponseEntity<Contract> createContract(
             @RequestParam Long borrowerId,
             @RequestParam Long ownerId,
+            @RequestParam Long commandeId,
             @RequestBody Contract contract) {
-        System.out.println("borrowerId: " + borrowerId + ", ownerId: " + ownerId);
+
+        System.out.println("borrowerId: " + borrowerId + ", ownerId: " + ownerId + ", commandeId: " + commandeId);
         System.out.println("Contract received: " + contract);
 
         try {
-            Contract createdContract = contractService.addContract(borrowerId, ownerId, contract);
+            Contract createdContract = contractService.addContract(borrowerId, ownerId, commandeId, contract);
             System.out.println("Contract created with ID: " + createdContract.getId());  // Log ID
             return new ResponseEntity<>(createdContract, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -40,6 +43,10 @@ public class ContractController {
     @PutMapping("/update-signatures/{contractId}")
     public Contract updateSignatures(@PathVariable Long contractId, @RequestBody Contract contract) {
         return contractService.updateSignatures(contractId, contract);
+    }
+    @PutMapping("/update-Borrowersignature/{contractId}")
+    public Contract updateBorrowerSignature(@PathVariable Long contractId, @RequestBody Contract contract) {
+        return contractService.updateBorrowerSignature(contractId, contract);
     }
     // Enregistrer les signatures
     @PutMapping("/{id}/signatures")
@@ -94,6 +101,12 @@ public class ContractController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Contract>> getContractsByUserId(@PathVariable Long userId) {
+        List<Contract> contracts = contractService.getContractsByUserId(userId);
+        return ResponseEntity.ok(contracts);
+    }
+
 
 
 }

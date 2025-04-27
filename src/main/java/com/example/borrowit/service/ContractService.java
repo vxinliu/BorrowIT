@@ -5,7 +5,7 @@ import com.example.borrowit.Entity.Contract;
 import java.util.List;
 
 public interface ContractService {
-    public Contract addContract(Long borrowerId, Long ownerId,Contract contract);
+    public Contract addContract(Long borrowerId, Long ownerId,Long commandeId,Contract contract);
 
     // Méthode pour enregistrer les signatures
     Contract saveSignatures(Long contractId, String ownerSignature, String borrowerSignature);
@@ -16,4 +16,5 @@ public interface ContractService {
    public void deleteContract(Long id);
 
     Contract updateSignatures(Long contractId, Contract contract);
+    Contract updateBorrowerSignature(Long contractId, Contract contract);
 }

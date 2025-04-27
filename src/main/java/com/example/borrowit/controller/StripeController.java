@@ -39,24 +39,31 @@ public class StripeController {
     public ResponseEntity<?> createPaymentIntent(@RequestBody Map<String, Object> request) {
         try {
             Long contractId = ((Number) request.get("contractId")).longValue();
-            double amount = ((Number) request.get("amount")).doubleValue();
 
-            // Création de l'intention de paiement Stripe
+            // 🔍 Récupération du contrat et du montant depuis la commande liée
+            Contract contract = contractRepository.findById(contractId)
+                    .orElseThrow(() -> new RuntimeException("Contrat non trouvé"));
+            double amount = contract.getCommande().getTotalPrice(); // montant automatique
+
+            // 🎯 Création de l'intention de paiement Stripe
             PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
-                    .setAmount((long)(amount * 100)) // Convertit en centimes
+                    .setAmount((long)(amount * 100)) // En centimes
                     .setCurrency("eur")
                     .build();
 
             PaymentIntent intent = PaymentIntent.create(params);
 
-            // Enregistrement du paiement dans la base de données
+            // 💾 Enregistrement du paiement
             paymentService.createPaymentFromStripe(contractId, intent);
 
-            return ResponseEntity.ok(Map.of("clientSecret", intent.getClientSecret()));
+            // Renvoi du clientSecret ET du montant dans la réponse
+            return ResponseEntity.ok(Map.of("clientSecret", intent.getClientSecret(), "amount", amount));
         } catch (StripeException e) {
             return ResponseEntity.status(500).body(Map.of("error", "Erreur Stripe: " + e.getMessage()));
         }
     }
+
+
 
     @PostMapping("/confirm-payment")
     public ResponseEntity<?> confirmPayment(@RequestBody Map<String, String> request) {

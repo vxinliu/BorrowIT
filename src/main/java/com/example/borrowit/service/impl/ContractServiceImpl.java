@@ -1,8 +1,10 @@
 package com.example.borrowit.service.impl;
 
+import com.example.borrowit.Entity.Commande;
 import com.example.borrowit.Entity.Contract;
 import com.example.borrowit.Entity.Payment;
 import com.example.borrowit.Entity.User;
+import com.example.borrowit.repository.CommandeRepository;
 import com.example.borrowit.repository.ContractRepository;
 import com.example.borrowit.repository.PaymentRepository;
 import com.example.borrowit.repository.UserRepository;
@@ -21,19 +23,21 @@ public class ContractServiceImpl implements ContractService {
     private PaymentRepository paymentRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CommandeRepository commandeRepository;
 
     @Override
-    public Contract addContract(Long borrowerId, Long ownerId, Contract contract) {
+    public Contract addContract(Long borrowerId, Long ownerId, Long commandeId, Contract contract) {
         User borrower = userRepository.findById(borrowerId).orElseThrow(() -> new RuntimeException("Borrower not found"));
         User owner = userRepository.findById(ownerId).orElseThrow(() -> new RuntimeException("Owner not found"));
+        Commande commande = commandeRepository.findById(commandeId).orElseThrow(() -> new RuntimeException("Commande not found"));
+
         contract.setId(null);
         contract.setBorrower(borrower);
         contract.setOwner(owner);
-
-
+        contract.setCommande(commande); // 🔥 Lien entre contrat et commande
 
         return contractRepository.save(contract);
-
     }
 
 
@@ -59,20 +63,49 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+
     public Contract updateContract(Long id, Contract contract) {
-        if (contractRepository.existsById(id)) {
-            contract.setId(id);
-            return contractRepository.save(contract);
-        } else {
-            throw new RuntimeException("Contract not found with id " + id);
+        Contract existing = contractRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Contract not found with id " + id));
+
+        existing.setStartDate(contract.getStartDate());
+        existing.setEndDate(contract.getEndDate());
+        existing.setOwnerSignature(contract.getOwnerSignature());
+        existing.setBorrowerSignature(contract.getBorrowerSignature());
+
+        // MAJ owner si fourni
+        if (contract.getOwner() != null && contract.getOwner().getId() != null) {
+            User owner = userRepository.findById(contract.getOwner().getId())
+                    .orElseThrow(() -> new RuntimeException("Owner not found"));
+            existing.setOwner(owner);
         }
+
+        // MAJ borrower si fourni
+        if (contract.getBorrower() != null && contract.getBorrower().getId() != null) {
+            User borrower = userRepository.findById(contract.getBorrower().getId())
+                    .orElseThrow(() -> new RuntimeException("Borrower not found"));
+            existing.setBorrower(borrower);
+        }
+
+        return contractRepository.save(existing);
     }
+
     public Contract updateSignatures(Long contractId, Contract contract) {
         Contract existingContract = contractRepository.findById(contractId)
                 .orElseThrow(() -> new RuntimeException("Contrat non trouvé"));
 
         // Mettre à jour les signatures
         existingContract.setOwnerSignature(contract.getOwnerSignature());
+        existingContract.setBorrowerSignature(contract.getBorrowerSignature());
+
+        return contractRepository.save(existingContract);
+    }
+    public Contract updateBorrowerSignature(Long contractId, Contract contract) {
+        Contract existingContract = contractRepository.findById(contractId)
+                .orElseThrow(() -> new RuntimeException("Contrat non trouvé"));
+
+        // Mettre à jour les signatures
+
         existingContract.setBorrowerSignature(contract.getBorrowerSignature());
 
         return contractRepository.save(existingContract);
@@ -84,5 +117,8 @@ public class ContractServiceImpl implements ContractService {
         } else {
             throw new RuntimeException("Contract not found with id " + id);
         }
+    }
+    public List<Contract> getContractsByUserId(Long userId) {
+        return contractRepository.findByOwnerIdOrBorrowerId(userId, userId);
     }
 }

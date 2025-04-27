@@ -82,4 +82,5 @@ public class Payment {
         this.stripePaymentIntentId = stripePaymentIntentId;
     }
 
+
 }

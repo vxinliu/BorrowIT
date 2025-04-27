@@ -1,19 +1,30 @@
 package com.example.borrowit.service.impl;
 
+import com.example.borrowit.Entity.Commande;
 import com.example.borrowit.Entity.Contract;
 import com.example.borrowit.Entity.Payment;
 import com.example.borrowit.repository.ContractRepository;
 import com.example.borrowit.repository.PaymentRepository;
 import com.example.borrowit.service.PaymentService;
+
 import com.stripe.model.PaymentIntent;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
+import java.io.File;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Date;
+
+
+
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -42,13 +53,14 @@ public class PaymentServiceImpl implements PaymentService {
 
         Payment payment = new Payment();
         payment.setContract(contract);
-        payment.setAmount(intent.getAmountReceived() / 100.0); // Convertir en euros
+        payment.setAmount(intent.getAmount() / 100.0); // ✅ Utiliser le montant prévu
         payment.setStripePaymentIntentId(intent.getId());
         payment.setStatus(Payment.PaymentStatus.PENDING);
         payment.setDate(new Date());
 
         return paymentRepository.save(payment);  // Sauvegarde du paiement
     }
+
 
     // Méthode pour mettre à jour le statut du paiement
     public void updatePaymentStatus(String paymentIntentId, String status) {
