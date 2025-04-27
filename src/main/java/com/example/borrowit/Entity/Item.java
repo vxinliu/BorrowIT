@@ -4,22 +4,36 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.Set;
 
 @Entity
 @Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private double price;
+    @JsonProperty("name")
+
     private String name;
+
+
+    @JsonProperty("description")
     private String description;
+
+    @JsonProperty("itemCondition")
     private String itemCondition;
+
+    @JsonProperty("availability")
     private boolean availability;
 
     /*
@@ -120,8 +134,16 @@ public class Item {
         this.id = id;
     }
 
+    @JsonProperty("price")
+    private double price; // Ajout du prix
+
+    @Lob
+    @JsonProperty("image")
+    private String image; // Ajout de l'image
+
     @ManyToOne
     @JsonIgnoreProperties("items") // Ignorer les items de l’utilisateur pour éviter la récursivité
+    @JsonIgnore // Ignorer la sérialisation de la propriété "owner"
     private User owner;
 
 
@@ -130,8 +152,11 @@ public class Item {
     private Category category;
 
     @OneToMany
+    @JsonIgnore // Ignorer la sérialisation de la propriété "feedbacks"
     private Set<Feedback> feedbacks;
 
 
-
+    public boolean getAv() {
+        return this.availability;
+    }
 }
