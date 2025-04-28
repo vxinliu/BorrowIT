@@ -3,7 +3,7 @@ package com.example.borrowit.Controller;
 import com.example.borrowit.DTO.DiscountDTO;
 import com.example.borrowit.Entity.Discount;
 import com.example.borrowit.repository.DiscountRepository;
-import com.example.borrowit.service.Impl.DiscountService;
+import com.example.borrowit.service.impl.DiscountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/discounts")
 @RequiredArgsConstructor
+//@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class DiscountController {
     @Autowired
 
@@ -65,7 +66,7 @@ public class DiscountController {
                 .collect(Collectors.toList());
     }*/
     // Méthode pour obtenir les discounts associés à un item spécifique
-    @GetMapping("/item/{itemId}/active:{active}")
+    @GetMapping("/itemactive/{itemId}/{active}")
     public ResponseEntity<List<Discount>> getActiveDiscountsForItem(
             @PathVariable Long itemId,
             @PathVariable boolean active) {

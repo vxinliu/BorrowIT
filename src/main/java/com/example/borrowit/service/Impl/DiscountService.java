@@ -1,4 +1,4 @@
-package com.example.borrowit.service.Impl;
+package com.example.borrowit.service.impl;
 
 import com.example.borrowit.DTO.DiscountDTO;
 import com.example.borrowit.Entity.Discount;
@@ -7,7 +7,7 @@ import com.example.borrowit.Entity.User;
 import com.example.borrowit.repository.DiscountRepository;
 import com.example.borrowit.repository.ItemRepository;
 import com.example.borrowit.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;

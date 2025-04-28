@@ -1,6 +1,6 @@
 package com.example.borrowit;
 
-import com.example.borrowit.service.Impl.UserService;
+import com.example.borrowit.service.impl.UserService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

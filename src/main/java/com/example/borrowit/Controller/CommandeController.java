@@ -11,6 +11,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/commandes")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class CommandeController {
 
     @Autowired
@@ -20,7 +21,6 @@ public class CommandeController {
     public ResponseEntity<Commande> createCommande(@RequestBody CommandeRequest request) {
         Commande commande = commandeService.createCommande(
                 request.getItemId(),
-                request.getUserId(),
                 request.getDescription()
 
         );

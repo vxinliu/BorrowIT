@@ -1,8 +1,5 @@
 package com.example.borrowit.Entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -22,10 +19,9 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @JsonProperty("name")
-
     private String name;
-
 
     @JsonProperty("description")
     private String description;
@@ -36,9 +32,30 @@ public class Item {
     @JsonProperty("availability")
     private boolean availability;
 
-    /*
+    @Enumerated(EnumType.STRING)
+    private StatusItem statusItem;
+
+    @JsonProperty("price")
+    private double price; // Ajout du prix
+
+    @Lob
+    @JsonProperty("image")
+    private String image; // Ajout de l'image
+
+    @ManyToOne
+    @JsonIgnore // Ignorer la sérialisation de la propriété "owner"
+    private User owner;
+
+    @ManyToOne
+    private Category category;
+
+    @OneToMany
+    @JsonIgnore // Ignorer la sérialisation de la propriété "feedbacks"
+    private Set<Feedback> feedbacks;
+
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
-    @JsonBackReference(value = "item-commande")
+    @JsonIgnore
+    @JsonManagedReference
     private Set<Commande> commandes;
 
     public Set<Commande> getCommandes() {
@@ -48,9 +65,10 @@ public class Item {
     public void setCommandes(Set<Commande> commandes) {
         this.commandes = commandes;
     }
-*/
+
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "item-discount")
+    @JsonIgnore
     private Set<Discount> discounts;
 
     public Set<Discount> getDiscounts() {
@@ -61,69 +79,10 @@ public class Item {
         this.discounts = discounts;
     }
 
-    public double getPrice() {
-        return price;
-    }
 
 
-    public Set<Feedback> getFeedbacks() {
-        return feedbacks;
-    }
-
-    public void setFeedbacks(Set<Feedback> feedbacks) {
-        this.feedbacks = feedbacks;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
-
-    public boolean isAvailability() {
-        return availability;
-    }
-
-    public void setAvailability(boolean availability) {
-        this.availability = availability;
-    }
-
-    public String getItemCondition() {
-        return itemCondition;
-    }
-
-    public void setItemCondition(String itemCondition) {
-        this.itemCondition = itemCondition;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
+    public boolean getAv() {
+        return this.availability;
     }
 
     public Long getId() {
@@ -134,29 +93,83 @@ public class Item {
         this.id = id;
     }
 
-    @JsonProperty("price")
-    private double price; // Ajout du prix
+    public String getName() {
+        return name;
+    }
 
-    @Lob
-    @JsonProperty("image")
-    private String image; // Ajout de l'image
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    @ManyToOne
-    @JsonIgnoreProperties("items") // Ignorer les items de l’utilisateur pour éviter la récursivité
-    @JsonIgnore // Ignorer la sérialisation de la propriété "owner"
-    private User owner;
+    public String getDescription() {
+        return description;
+    }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    @ManyToOne
-    @JsonBackReference(value = "item-category")
-    private Category category;
+    public String getItemCondition() {
+        return itemCondition;
+    }
 
-    @OneToMany
-    @JsonIgnore // Ignorer la sérialisation de la propriété "feedbacks"
-    private Set<Feedback> feedbacks;
+    public void setItemCondition(String itemCondition) {
+        this.itemCondition = itemCondition;
+    }
 
+    public boolean isAvailability() {
+        return availability;
+    }
 
-    public boolean getAv() {
-        return this.availability;
+    public void setAvailability(boolean availability) {
+        this.availability = availability;
+    }
+
+    public StatusItem getStatusItem() {
+        return statusItem;
+    }
+
+    public void setStatusItem(StatusItem statusItem) {
+        this.statusItem = statusItem;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Set<Feedback> getFeedbacks() {
+        return feedbacks;
+    }
+
+    public void setFeedbacks(Set<Feedback> feedbacks) {
+        this.feedbacks = feedbacks;
     }
 }

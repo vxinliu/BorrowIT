@@ -36,6 +36,7 @@ public class Discount {
 
     @OneToMany(mappedBy = "discount")
     @JsonManagedReference(value = "discount-commande")
+    @JsonIgnore
     private List<Commande> commandes;
 
     public String getName() {
@@ -104,6 +105,7 @@ public class Discount {
 
     @ManyToOne
     @JsonBackReference(value = "item-discount")
+    @JsonIgnore
     private Item item;  // Assure-toi que cette relation existe et que tu accèdes à l'ID de l'item
 
 }

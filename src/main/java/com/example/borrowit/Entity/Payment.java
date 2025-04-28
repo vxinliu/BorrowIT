@@ -2,7 +2,7 @@ package com.example.borrowit.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,9 +25,12 @@ public class Payment {
     @JsonIgnore
     private Contract contract;
 
+
+
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "user_id") // Adjust to match your database schema
+    @JsonIgnore
+    private User user; // This is the missing field
 
     public enum PaymentStatus {
         PENDING, COMPLETED, FAILED

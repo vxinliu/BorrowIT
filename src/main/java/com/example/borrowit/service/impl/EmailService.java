@@ -1,4 +1,4 @@
-package com.example.borrowit.service.Impl;
+package com.example.borrowit.service.impl;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;

@@ -93,6 +93,7 @@ public class Commande {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "discount_id")
     @JsonBackReference(value = "discount-commande")
+    @JsonIgnore
     private Discount discount;
 
     @ManyToOne
@@ -102,6 +103,7 @@ public class Commande {
 
     @ManyToOne
     @JoinColumn(name = "item_id")
+    @JsonIgnore
     private Item item;
 
 

@@ -1,11 +1,8 @@
 package com.example.borrowit.Controller;
 
-import com.example.borrowit.service.Impl.EmailService;
-import com.example.borrowit.service.Impl.PasswordResetTokenService;
-import com.example.borrowit.service.Impl.UserService;
-import com.example.borrowit.service.Impl.EmailService;
-import com.example.borrowit.service.Impl.PasswordResetTokenService;
-import com.example.borrowit.service.Impl.UserService;
+import com.example.borrowit.service.impl.EmailService;
+import com.example.borrowit.service.impl.PasswordResetTokenService;
+import com.example.borrowit.service.impl.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
+
 public class PasswordResetController {
 
     private final UserService userService;

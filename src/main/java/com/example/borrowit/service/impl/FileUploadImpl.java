@@ -9,10 +9,12 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 @Service
-@RequiredArgsConstructor
 public class FileUploadImpl implements FileUploadService {
 
     private final Cloudinary cloudinary;
+    public FileUploadImpl(Cloudinary cloudinary){
+        this.cloudinary=cloudinary;
+    }
     @Override
     public String uploadFile(MultipartFile multipartFile) throws IOException {
         return cloudinary.uploader()

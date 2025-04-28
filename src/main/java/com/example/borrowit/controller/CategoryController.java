@@ -1,4 +1,4 @@
-package com.example.borrowit.controller;
+package com.example.borrowit.Controller;
 
 import com.example.borrowit.Entity.Category;
 import com.example.borrowit.service.CategoryService;
@@ -10,7 +10,8 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/categories")
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
+
 public class CategoryController {
 
     @Autowired

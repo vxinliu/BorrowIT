@@ -1,7 +1,8 @@
 package com.example.borrowit.Controller;
 
+import com.example.borrowit.DTO.UserDTO;
 import com.example.borrowit.Entity.User;
-import com.example.borrowit.service.Impl.UserService;
+import com.example.borrowit.service.impl.UserService;
 import com.example.borrowit.JwtUtil;
 import com.example.borrowit.JwtResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
@@ -37,7 +39,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user) {
+    public ResponseEntity<?> login(@RequestBody UserDTO user) {
         try {
             logger.info("Attempting to authenticate user with email: {}", user.getEmail());
 

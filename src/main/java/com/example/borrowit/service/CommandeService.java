@@ -7,7 +7,7 @@ import java.util.*;
 public interface CommandeService {
         List<Commande> getAllCommandes();
 
-        Commande createCommande(Long userId, Long itemId, String description);
+        Commande createCommande(Long itemId, String description);
 
         Commande getCommandeById(Long id);
 

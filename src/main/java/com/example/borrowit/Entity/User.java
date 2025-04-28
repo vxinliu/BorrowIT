@@ -1,11 +1,14 @@
 package com.example.borrowit.Entity;
 
 import jakarta.persistence.*;
-
-import java.util.List;
-import java.util.Set;
+import lombok.*;
+import java.util.*;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
 
     @Id
@@ -14,53 +17,59 @@ public class User {
 
     private Long cin;
     private String name;
+
+    @Column(unique = true)
     private String email;
+
     private String password;
     private String phone;
     private String address;
-    private String genre;  // Champ genre ajouté
+    private String genre;
+    private String dateDeNaissance;
+
     @Column(nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'Active'")
     private String status = "Active";
-    private String dateDeNaissance;  // Champ dateDeNaissance ajouté
+
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] image;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    private String verificationCode;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Feedback> feedbacks;
+    private List<Feedback> feedbacks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "owner")
-    private List<Item> items;
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private List<Item> items = new ArrayList<>();
 
-    @OneToMany(mappedBy = "borrower")
-    private List<Request> requests;
+    @OneToMany(mappedBy = "borrower", cascade = CascadeType.ALL)
+    private List<Request> requests = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
-    private List<Review> reviews;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
-    private List<Payment> payments;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Payment> payments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "borrower", cascade = CascadeType.ALL)
+    private List<Contract> borrowedContracts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "borrower")
-    private List<Contract> borrowedContracts;
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private List<Contract> ownedContracts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "owner")
-    private List<Contract> ownedContracts;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<CustomerService> customerServices = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
-    private List<CustomerService> customerServices;
-
-    @OneToMany(mappedBy = "user")
-    private List<Notification> notifications;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Notification> notifications = new ArrayList<>();
 
     // Enum Role pour définir les rôles de l'utilisateur
     public enum Role {
         ADMIN, BORROWER, OWNER
     }
-
-    // Getters et Setters
-
 
     public Long getId() {
         return id;
@@ -70,20 +79,20 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Long getCin() {
         return cin;
     }
 
     public void setCin(Long cin) {
         this.cin = cin;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -126,14 +135,6 @@ public class User {
         this.genre = genre;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public String getDateDeNaissance() {
         return dateDeNaissance;
     }
@@ -142,12 +143,36 @@ public class User {
         this.dateDeNaissance = dateDeNaissance;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
     public Role getRole() {
         return role;
     }
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
     }
 
     public List<Feedback> getFeedbacks() {

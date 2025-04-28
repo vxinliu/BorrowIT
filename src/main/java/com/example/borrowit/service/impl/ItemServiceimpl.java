@@ -1,7 +1,9 @@
 package com.example.borrowit.service.impl;
-import com.example.borrowit.Dto.ItemsDTO;
+
+import com.example.borrowit.DTO.ItemsDTO;
 import com.example.borrowit.Entity.Category;
 import com.example.borrowit.Entity.Item;
+import com.example.borrowit.Entity.StatusItem;
 import com.example.borrowit.Entity.User;
 import com.example.borrowit.repository.CategoryRepository;
 import com.example.borrowit.repository.ItemRepository;
@@ -39,6 +41,7 @@ public class ItemServiceimpl implements ItemService {
             itemDto.setAvailability(item.getAv());
             itemDto.setCategoryType(item.getCategory().getName().toString());
             itemDto.setIdUser(item.getOwner().getId());
+            itemDto.setStatusItem(item.getStatusItem());
             itemsDTOS.add(itemDto);
         }
         return itemsDTOS;
@@ -63,6 +66,7 @@ public class ItemServiceimpl implements ItemService {
         item.setImage(itemdto.getImage());
         item.setCategory(category);
         item.setOwner(user);
+        item.setStatusItem(StatusItem.PENDING);
         return itemRepository.save(item);
     }
 
@@ -82,6 +86,13 @@ public class ItemServiceimpl implements ItemService {
             return itemRepository.save(item);
         }
         return null;
+    }
+
+    @Override
+    public void updateStatusItem(Long idItem, StatusItem statusItem) {
+        Item existingItem = itemRepository.findById(idItem).get();
+        existingItem.setStatusItem(statusItem);
+        itemRepository.save(existingItem);
     }
 
     @Override
