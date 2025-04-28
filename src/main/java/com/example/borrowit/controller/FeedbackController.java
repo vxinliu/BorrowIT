@@ -4,15 +4,19 @@ import com.example.borrowit.DTO.FeedbackDTO;
 import com.example.borrowit.DTO.FeedbackRequestDTO;
 import com.example.borrowit.DTO.SentimentAnalysis;
 import com.example.borrowit.Entity.Feedback;
+import com.example.borrowit.Entity.User;
+import com.example.borrowit.repository.UserRepository;
 import com.example.borrowit.service.IFeedbackService;
 import com.example.borrowit.service.IReactsService;
 import com.example.borrowit.service.impl.BadWordFilterService;
 import com.example.borrowit.service.impl.SentimentAnalysisService;
+import com.example.borrowit.service.impl.UserService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -33,12 +37,14 @@ public class FeedbackController {
     public IReactsService reactsService;
     private final BadWordFilterService badWordFilterService;
     private final SentimentAnalysisService sentimentAnalysisService;
+    private  final UserService userService;
     private static final Logger log = LoggerFactory.getLogger(SentimentAnalysisService.class);
-    public FeedbackController(IFeedbackService feedbackService, IReactsService reactsService, BadWordFilterService badWordFilterService,SentimentAnalysisService sentimentAnalysisService) {
+    public FeedbackController(IFeedbackService feedbackService, IReactsService reactsService, BadWordFilterService badWordFilterService, SentimentAnalysisService sentimentAnalysisService, UserService userService) {
         this.feedbackService = feedbackService;
         this.reactsService = reactsService;
         this.badWordFilterService = badWordFilterService;
         this.sentimentAnalysisService=sentimentAnalysisService;
+        this.userService=userService;
     }
 
     // Retrieve all feedbacks
@@ -193,6 +199,22 @@ public class FeedbackController {
     }
 
 
+    @GetMapping("/test-feedback/{id}")
+    public ResponseEntity<String> testFeedbackImage(@PathVariable Long id) {
+        Feedback feedback = feedbackService.retrieveFeedback(id);
+        if (feedback == null || feedback.getUser() == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        byte[] imageBytes = feedback.getUser().getImage();
+        if (imageBytes == null) {
+            return ResponseEntity.ok("Feedback found but user has no image");
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(new String(imageBytes));
+    }
 
 
 

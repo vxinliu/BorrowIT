@@ -15,9 +15,11 @@ public interface ReactsRepository extends JpaRepository<Reacts,Long> {
      List<Reacts> findReactsByFeedbackId(Long feedbackId);
      // Optional: If you need to fetch reacts with user data in one query
      // Method to fetch reacts with user data in a single query
-     @Query("SELECT r FROM Reacts r LEFT JOIN FETCH r.user WHERE r.feedback.id = :feedbackId")
+     @Query("SELECT r FROM Reacts r " +
+             "LEFT JOIN FETCH r.user " +
+             "LEFT JOIN FETCH r.feedback " +
+             "WHERE r.feedback.id = :feedbackId")
      List<Reacts> findByFeedbackIdWithUser(@Param("feedbackId") Long feedbackId);
-
      @Modifying
      @Query("DELETE FROM Reacts r WHERE r.feedback.id = :feedbackId AND r.user.id = :userId")
      void deleteByFeedbackIdAndUserId(@Param("feedbackId") Long feedbackId, @Param("userId") Long userId);

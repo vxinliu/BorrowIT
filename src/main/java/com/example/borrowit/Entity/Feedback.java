@@ -36,7 +36,7 @@ public class Feedback implements Serializable {
     // @ManyToOne
     // private Item item;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JsonBackReference
     private User user;
 

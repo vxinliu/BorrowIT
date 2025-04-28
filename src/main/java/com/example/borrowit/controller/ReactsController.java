@@ -60,18 +60,18 @@ public class ReactsController {
         try {
             List<Reacts> reacts = reactsService.getReactsForFeedback(feedbackId);
 
-            // Return empty array instead of null
             if (reacts == null || reacts.isEmpty()) {
                 return ResponseEntity.ok(Collections.emptyList());
             }
 
+            // Use JOIN FETCH to load user data with reacts
             List<ReactDTO> dtos = reacts.stream()
                     .map(ReactDTO::new)
                     .collect(Collectors.toList());
 
             return ResponseEntity.ok(dtos);
         } catch (Exception e) {
-            return ResponseEntity.ok(Collections.emptyList()); // Return empty array on error
+            return ResponseEntity.ok(Collections.emptyList());
         }
     }
 
@@ -92,5 +92,7 @@ public class ReactsController {
         reactsService.removeReaction(feedbackId, userId);
         return ResponseEntity.noContent().build();
     }
+
+
 
 }
