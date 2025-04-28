@@ -19,9 +19,9 @@ public class CommandeController {
     public List<Commande> getCommandes() {
         return commandeService.getCommandes();
     }
-    @GetMapping("/owner/{ownerId}")
-    public List<Commande> getCommandesPourProprietaire(@PathVariable Long ownerId) {
-        return commandeService.getCommandesByItemOwner(ownerId);
+    @GetMapping("/{email}")
+    public List<Commande> getCommandesPourProprietaire(@PathVariable String email) {
+        return commandeService.getCommandesByItemOwner(email);
     }
 
 

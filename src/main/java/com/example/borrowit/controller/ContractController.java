@@ -1,6 +1,8 @@
 package com.example.borrowit.controller;
 
+import com.example.borrowit.Dto.ContractDTO;
 import com.example.borrowit.Entity.Contract;
+import com.example.borrowit.Entity.User;
 import com.example.borrowit.service.ContractService;
 import com.example.borrowit.service.impl.ContractServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,12 +103,29 @@ public class ContractController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Contract>> getContractsByUserId(@PathVariable Long userId) {
-        List<Contract> contracts = contractService.getContractsByUserId(userId);
+    @GetMapping("/user/{email}")
+    public ResponseEntity<List<Contract>> getContractsByUserEmail(@PathVariable String email) {
+        List<Contract> contracts = contractService.getContractsByUserEmail(email);
         return ResponseEntity.ok(contracts);
     }
-
+@GetMapping("/borrower-by-contract/{contractId}")
+    public ResponseEntity<User>getBorrowerByContractId(@PathVariable Long contractId) {
+    User borrower = contractService.getBorrowerByContractId(contractId);
+    if (borrower != null) {
+        return new ResponseEntity<>(borrower, HttpStatus.OK);
+    } else {
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+}
+    @GetMapping("/owner-by-contract/{contractId}")
+    public ResponseEntity<User>getOwneryContractId(@PathVariable Long contractId) {
+        User owner = contractService.getOwneryContractId(contractId);
+        if (owner != null) {
+            return new ResponseEntity<>(owner, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
 
 }

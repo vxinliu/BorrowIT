@@ -14,7 +14,8 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Contract {
+public class
+Contract {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

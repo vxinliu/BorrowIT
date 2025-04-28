@@ -18,8 +18,8 @@ public class CommandeServiceImpl {
     public List<Commande> findByUser(Long userId) {
         return commandeRepository.findByItemOwnerId(userId);
     }
-    public List<Commande> getCommandesByItemOwner(Long ownerId) {
-        return commandeRepository.findCommandesByItemOwnerId(ownerId);
+    public List<Commande> getCommandesByItemOwner(String email) {
+        return commandeRepository.findCommandesByItemOwnerEmail(email);
     }
 
 

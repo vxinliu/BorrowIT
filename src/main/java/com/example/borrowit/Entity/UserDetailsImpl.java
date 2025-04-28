@@ -60,7 +60,11 @@ public class UserDetailsImpl implements UserDetails {
 
 
     public String getGenre() {
-        return user.getGenre(); // Assurez-vous que cette méthode existe dans votre entité User
+        return user.getGenre();
+        // Assurez-vous que cette méthode existe dans votre entité User
+    }
+    public Long getId() {
+        return user.getId(); // Assurez-vous que cette méthode existe dans votre entité User
     }
 
     public String getDateDeNaissance() {
@@ -70,5 +74,4 @@ public class UserDetailsImpl implements UserDetails {
     public String getRole() {
         return user.getRole().name();
     }
-    public Long getId() {return user.getId();}
 }

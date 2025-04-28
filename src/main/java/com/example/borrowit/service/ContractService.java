@@ -17,4 +17,5 @@ public interface ContractService {
 
     Contract updateSignatures(Long contractId, Contract contract);
     Contract updateBorrowerSignature(Long contractId, Contract contract);
+
 }

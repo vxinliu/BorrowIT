@@ -118,7 +118,13 @@ public class ContractServiceImpl implements ContractService {
             throw new RuntimeException("Contract not found with id " + id);
         }
     }
-    public List<Contract> getContractsByUserId(Long userId) {
-        return contractRepository.findByOwnerIdOrBorrowerId(userId, userId);
+    public List<Contract> getContractsByUserEmail(String email) {
+        return contractRepository.findByUserEmail(email);
+    }
+    public User getBorrowerByContractId(Long id) {
+        return contractRepository.findBorrowerByContractId(id);
+    }
+    public User getOwneryContractId(Long id) {
+        return contractRepository.findOwnerByContractId(id);
     }
 }

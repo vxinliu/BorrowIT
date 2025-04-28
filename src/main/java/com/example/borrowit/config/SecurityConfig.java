@@ -3,6 +3,7 @@ package com.example.borrowit.config;
 import com.example.borrowit.JwtAuthorizationFilter;
 import com.example.borrowit.JwtUtil;
 import com.example.borrowit.service.impl.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,17 +27,22 @@ public class SecurityConfig {
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
+    // Lire la valeur depuis application.properties
+    @Value("${security.jwt.enabled:true}")
+    private boolean jwtEnabled;
+
     public SecurityConfig(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         JwtAuthorizationFilter jwtAuthorizationFilter = new JwtAuthorizationFilter(authenticationManager, userService, jwtUtil);
 
         http
-                .csrf(csrf -> csrf.disable()) // Désactivation de CSRF
-                .cors(Customizer.withDefaults()) // Nouvelle syntaxe recommandée pour activer CORS
+                .csrf(csrf -> csrf.disable())
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/users/**").permitAll()
@@ -47,36 +53,34 @@ public class SecurityConfig {
                         .requestMatchers("/payments/**").permitAll()
                         .requestMatchers("/payments/by-contract/**").permitAll()
                         .requestMatchers("/payments/confirm/**").permitAll()
-
                         .requestMatchers("/stripe/**").permitAll()
-
-
-
                         .requestMatchers("/items/**").permitAll()
                         .requestMatchers("/commandes/**").permitAll()
                         .requestMatchers("/commandes/user/**").permitAll()
-
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .headers(headers -> headers
                         .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsMode.SAMEORIGIN))
                         .contentSecurityPolicy(csp -> csp.policyDirectives("frame-ancestors 'self' http://localhost:4200"))
                         .xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
                 );
 
+        // Ajouter le filtre seulement si activé
+        if (jwtEnabled) {
+            http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+        }
+
         return http.build();
     }
 
-
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();  // Utilisation de BCrypt pour l'encodage des mots de passe
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();  // Retourne l'AuthenticationManager pour la gestion des authentifications
+        return authenticationConfiguration.getAuthenticationManager();
     }
 }

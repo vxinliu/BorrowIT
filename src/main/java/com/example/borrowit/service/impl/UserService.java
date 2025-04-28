@@ -17,48 +17,42 @@ import java.util.Optional;
 @Service
 public class UserService implements UserDetailsService {
 
-    @Autowired
-    private UserRepository userRepository;
-
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // Inject PasswordEncoder
+    @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder(); // Use BCryptPasswordEncoder
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    // 📌 Récupérer tous les utilisateurs
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    // 📌 Récupérer un utilisateur par ID
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
 
-    // 📌 Récupérer un utilisateur par email
     public Optional<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    // 📌 Ajouter ou modifier un utilisateur
     public User saveUser(User user) {
-        // Encode password before saving
-        user.setPassword(passwordEncoder.encode(user.getPassword())); // Encode password
+        if (user.getPassword() != null && !user.getPassword().isEmpty() && !user.getPassword().startsWith("$2a$")) {
+            user.setPassword(passwordEncoder.encode(user.getPassword())); // Encode password only if it is not already encoded
+        }
         return userRepository.save(user);
     }
 
-    // 📌 Mettre à jour un utilisateur
     public User updateUser(Long id, User updatedUser) {
         return userRepository.findById(id).map(existingUser -> {
             existingUser.setCin(updatedUser.getCin());
             existingUser.setName(updatedUser.getName());
             existingUser.setEmail(updatedUser.getEmail());
 
-            // If password is provided, encode and update
-            if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+            // Only encode password if it's not already encoded
+            if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty() && !updatedUser.getPassword().startsWith("$2a$")) {
                 existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
             }
 
@@ -69,34 +63,39 @@ public class UserService implements UserDetailsService {
         }).orElseThrow(() -> new RuntimeException("Utilisateur non trouvé avec l'ID : " + id));
     }
 
-    // 📌 Supprimer un utilisateur par ID
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);
     }
 
-    // 📌 Supprimer un utilisateur par email
     public void deleteUserByEmail(String email) {
         userRepository.deleteByEmail(email);
     }
 
-    // ✅ Méthode pour charger l'utilisateur par son email (utilisée par Spring Security)
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-
+                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur introuvable avec l'e-mail : " + email));
         return new UserDetailsImpl(user);
     }
-    // Mettre à jour le mot de passe de l'utilisateur
+
     public void updatePassword(String email, String newPassword) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
+        userRepository.findByEmail(email).ifPresentOrElse(user -> {
             user.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user);
-        } else {
+        }, () -> {
             throw new RuntimeException("Utilisateur non trouvé.");
-        }
+        });
     }
 
+    public void createUserIfNotExists(String email, String name) {
+        if (userRepository.findByEmail(email).isEmpty()) {
+            User user = new User();
+            user.setEmail(email);
+            user.setName(name);
+            user.setPassword(""); // No password set initially
+            user.setRole(User.Role.BORROWER);
+            user.setStatus("Active");
+            userRepository.save(user);
+        }
+    }
 }

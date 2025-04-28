@@ -11,8 +11,9 @@ import java.util.List;
 public interface CommandeRepository  extends JpaRepository<Commande, Long> {
     @Query("SELECT c FROM Commande c WHERE c.item.owner.id = :userId")
     List<Commande> findByItemOwnerId(@Param("userId") Long userId);
-    @Query("SELECT c FROM Commande c JOIN FETCH c.item i JOIN FETCH i.owner o WHERE o.id = :ownerId")
-    List<Commande> findCommandesByItemOwnerId(@Param("ownerId") Long ownerId);
+    @Query("SELECT c FROM Commande c JOIN FETCH c.item i JOIN FETCH i.owner o WHERE o.email = :email")
+    List<Commande> findCommandesByItemOwnerEmail(@Param("email") String email);
+
 
 
 }

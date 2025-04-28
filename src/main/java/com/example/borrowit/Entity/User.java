@@ -1,20 +1,9 @@
 package com.example.borrowit.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.mapping.List;
-
 import java.util.Set;
 
 @Entity
-@Data
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-
-
 public class User {
 
     @Id
@@ -23,6 +12,8 @@ public class User {
 
     private Long cin;
     private String name;
+    @Column(unique = true)
+
     private String email;
     private String password;
     private String phone;
@@ -30,13 +21,19 @@ public class User {
     private String genre;  // Champ genre ajouté
     @Column(nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'Active'")
     private String status = "Active";
-    private String dateDeNaissance;  // Champ dateDeNaissance ajouté
+    private String dateDeNaissance;
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] image;
+
 
     @Enumerated(EnumType.STRING)
     private Role role;
+    private String verificationCode;
+
+
 
     @OneToMany(mappedBy = "owner")
-    @JsonIgnore
     private Set<Item> items;
 
     @OneToMany(mappedBy = "borrower")
@@ -44,6 +41,10 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private Set<Review> reviews;
+
+    @OneToMany(mappedBy = "user")
+    private Set<Feedback> feedbacks;
+
 
 
     @OneToMany(mappedBy = "borrower")
@@ -107,13 +108,26 @@ public class User {
     public String getPassword() {
         return password;
     }
+    public String getVerificationCode() {
+        return verificationCode;
+    }
 
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+    }
     public void setPassword(String password) {
         this.password = password;
     }
 
     public String getPhone() {
         return phone;
+    }
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
     public void setPhone(String phone) {
@@ -176,8 +190,13 @@ public class User {
         this.reviews = reviews;
     }
 
+    public Set<Feedback> getFeedbacks() {
+        return feedbacks;
+    }
 
-
+    public void setFeedbacks(Set<Feedback> feedbacks) {
+        this.feedbacks = feedbacks;
+    }
 
 
     public Set<Contract> getBorrowedContracts() {

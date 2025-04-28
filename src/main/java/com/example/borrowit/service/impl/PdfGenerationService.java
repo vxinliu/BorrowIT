@@ -302,8 +302,7 @@ public byte[] generateInvoicePdf(Contract contract) throws IOException {
         float totalX = x + tableWidth*0.6f;
         Item item = contract.getCommande().getItem();
         double price = item.getPrice();
-        double tax = price * 0.19; // Exemple: TVA 19%
-        double total = price + tax;
+        double total = price ;
 
         // Sous-total
         drawTextRightAligned(cs, "Sous-total:", totalX, y, PDType1Font.HELVETICA, 10);
@@ -311,11 +310,6 @@ public byte[] generateInvoicePdf(Contract contract) throws IOException {
                 x+tableWidth, y, PDType1Font.HELVETICA, 10);
         y -= 15;
 
-        // TVA
-        drawTextRightAligned(cs, "TVA (19%):", totalX, y, PDType1Font.HELVETICA, 10);
-        drawTextRightAligned(cs, String.format("%.2f DT", tax),
-                x+tableWidth, y, PDType1Font.HELVETICA, 10);
-        y -= 15;
 
         // Total
         cs.setFont(PDType1Font.HELVETICA_BOLD, 12);
