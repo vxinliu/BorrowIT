@@ -5,6 +5,7 @@ import com.example.borrowit.Entity.Reacts;
 import com.example.borrowit.Entity.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,12 +18,54 @@ public class FeedbackDTO {
     private String userName;
     private String userEmail; // Add other user fields as needed
 
+    private String reportReason;  // Add this field
+    private boolean isReported;   // Add this field
+    private String userAvatar;
+
+    public void setSentimentScore(Double sentimentScore) {
+        this.sentimentScore = sentimentScore;
+    }
+
+    public Double getSentimentScore() {
+        return sentimentScore;
+    }
+
+    private Double sentimentScore; // Add the sentiment score field
+
+    public void setReportReason(String reportReason) {
+        this.reportReason = reportReason;
+    }
+
+    public void setReported(boolean reported) {
+        isReported = reported;
+    }
+
+    public String getReportReason() {
+        return reportReason;
+    }
+
+    public boolean isReported() {
+        return isReported;
+    }
+
     public FeedbackDTO(Feedback feedback) {
         this.id = feedback.getId();
         this.message = feedback.getMessage();
         this.date = feedback.getDate();
-
+        // Add these lines to map the report information
+        this.reportReason = feedback.getReason();  // Make sure Feedback has getReason()
+        this.isReported = feedback.isReported();   // Make sure Feedback has isReported()
+        this.sentimentScore = feedback.getSentimentScore(); // Ajoutez cette ligne
+// In your Java FeedbackDTO class
+        this.userAvatar = feedback.getUser().getImage() != null ?
+                Base64.getEncoder().encodeToString(feedback.getUser().getImage()) :
+                null;
         // Handle reacts
+        this.reactTypes = feedback.getReacts() != null ?
+                feedback.getReacts().stream()
+                        .map(react -> react.getReaction().name())
+                        .collect(Collectors.toList()) :
+                new ArrayList<>();
         this.reactTypes = feedback.getReacts() != null ?
                 feedback.getReacts().stream()
                         .map(react -> react.getReaction().name())

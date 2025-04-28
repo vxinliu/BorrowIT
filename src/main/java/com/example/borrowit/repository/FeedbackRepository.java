@@ -13,4 +13,6 @@ public interface FeedbackRepository extends JpaRepository<Feedback,Long> {
 
     @Query("SELECT f FROM Feedback f LEFT JOIN FETCH f.user")
     List<Feedback> findAllWithUser();
+
+    List<Feedback> findByUserId(Long userId);
 }

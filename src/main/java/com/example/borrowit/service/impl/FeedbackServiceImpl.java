@@ -136,6 +136,10 @@ public class FeedbackServiceImpl implements IFeedbackService {
                 })
                 .orElseThrow(() -> new RuntimeException("Feedback not found"));
     }
+    @Override
+    public List<Feedback> retrieveFeedbacksByUser(Long userId) {
+        return feedbackRepository.findByUserId(userId);
+    }
 
 
 }

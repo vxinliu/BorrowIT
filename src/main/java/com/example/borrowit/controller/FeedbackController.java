@@ -21,6 +21,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -98,8 +99,11 @@ public class FeedbackController {
 
 
     @GetMapping("/retrieve-reported-feedbacks")
-    public List<Feedback> getReportedFeedbacks() {
-        return feedbackService.retrieveReportedFeedbacks();
+    public List<FeedbackDTO> getReportedFeedbacks() {
+        return feedbackService.retrieveReportedFeedbacks()
+                .stream()
+                .map(FeedbackDTO::new)
+                .collect(Collectors.toList());
     }
 
     @DeleteMapping("/delete-reported-feedback/{id}")
@@ -178,6 +182,16 @@ public class FeedbackController {
         }
         return "NEUTRAL";
     }
+
+    // In FeedbackController.java
+    @GetMapping("/retrieve-user-feedbacks/{userId}")
+    public List<FeedbackDTO> getFeedbacksByUser(@PathVariable("userId") Long userId) {
+        return feedbackService.retrieveFeedbacksByUser(userId)
+                .stream()
+                .map(FeedbackDTO::new)
+                .collect(Collectors.toList());
+    }
+
 
 
 

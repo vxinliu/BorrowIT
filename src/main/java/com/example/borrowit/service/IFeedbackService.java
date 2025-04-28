@@ -16,4 +16,5 @@ public interface IFeedbackService {
     public List<Feedback> retrieveReportedFeedbacks();
     public Feedback rejectFeedback(Long feedbackId);
     public Feedback modifyFeedback(FeedbackRequestDTO requestDTO);
+    List<Feedback> retrieveFeedbacksByUser(Long userId);
 }

@@ -17,6 +17,7 @@ public class FeedbackRequestDTO {
         return userId;
     }
 
+
     public void setId(Long id) {
         this.id = id;
     }
