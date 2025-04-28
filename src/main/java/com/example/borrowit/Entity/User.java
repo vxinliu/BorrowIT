@@ -1,9 +1,14 @@
 package com.example.borrowit.Entity;
 
 import jakarta.persistence.*;
-import java.util.Set;
+import lombok.*;
+import java.util.*;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
 
     @Id
@@ -12,59 +17,58 @@ public class User {
 
     private Long cin;
     private String name;
-    @Column(unique = true)
 
+    @Column(unique = true)
     private String email;
+
     private String password;
     private String phone;
     private String address;
-    private String genre;  // Champ genre ajouté
+    private String genre;
+    private String dateDeNaissance;
+
     @Column(nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'Active'")
     private String status = "Active";
-    private String dateDeNaissance;
+
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] image;
 
-
     @Enumerated(EnumType.STRING)
     private Role role;
+
     private String verificationCode;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Feedback> feedbacks = new ArrayList<>();
 
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private List<Item> items = new ArrayList<>();
 
-    @OneToMany(mappedBy = "owner")
-    private Set<Item> items;
+    @OneToMany(mappedBy = "borrower", cascade = CascadeType.ALL)
+    private List<Request> requests = new ArrayList<>();
 
-    @OneToMany(mappedBy = "borrower")
-    private Set<Request> requests;
-
-    @OneToMany(mappedBy = "user")
-    private Set<Review> reviews;
-
-    @OneToMany(mappedBy = "user")
-    private Set<Feedback> feedbacks;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>();
 
 
 
-    @OneToMany(mappedBy = "borrower")
-    private Set<Contract> borrowedContracts;
+    @OneToMany(mappedBy = "borrower", cascade = CascadeType.ALL)
+    private List<Contract> borrowedContracts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "owner")
-    private Set<Contract> ownedContracts;
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private List<Contract> ownedContracts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
-    private Set<CustomerService> customerServices;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<CustomerService> customerServices = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
-    private Set<Notification> notifications;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Notification> notifications = new ArrayList<>();
 
     // Enum Role pour définir les rôles de l'utilisateur
     public enum Role {
         ADMIN, BORROWER, OWNER
     }
-
-    // Getters et Setters
 
     public Long getId() {
         return id;
@@ -85,14 +89,7 @@ public class User {
     public String getName() {
         return name;
     }
-    public String getStatus() {
-        return status; // CORRECTION: Retourne le champ status, pas name
 
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
     public void setName(String name) {
         this.name = name;
     }
@@ -108,26 +105,13 @@ public class User {
     public String getPassword() {
         return password;
     }
-    public String getVerificationCode() {
-        return verificationCode;
-    }
 
-    public void setVerificationCode(String verificationCode) {
-        this.verificationCode = verificationCode;
-    }
     public void setPassword(String password) {
         this.password = password;
     }
 
     public String getPhone() {
         return phone;
-    }
-    public byte[] getImage() {
-        return image;
-    }
-
-    public void setImage(byte[] image) {
-        this.image = image;
     }
 
     public void setPhone(String phone) {
@@ -158,6 +142,22 @@ public class User {
         this.dateDeNaissance = dateDeNaissance;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
     public Role getRole() {
         return role;
     }
@@ -166,68 +166,77 @@ public class User {
         this.role = role;
     }
 
-    public Set<Item> getItems() {
-        return items;
+    public String getVerificationCode() {
+        return verificationCode;
     }
 
-    public void setItems(Set<Item> items) {
-        this.items = items;
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
     }
 
-    public Set<Request> getRequests() {
-        return requests;
-    }
-
-    public void setRequests(Set<Request> requests) {
-        this.requests = requests;
-    }
-
-    public Set<Review> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(Set<Review> reviews) {
-        this.reviews = reviews;
-    }
-
-    public Set<Feedback> getFeedbacks() {
+    public List<Feedback> getFeedbacks() {
         return feedbacks;
     }
 
-    public void setFeedbacks(Set<Feedback> feedbacks) {
+    public void setFeedbacks(List<Feedback> feedbacks) {
         this.feedbacks = feedbacks;
     }
 
+    public List<Item> getItems() {
+        return items;
+    }
 
-    public Set<Contract> getBorrowedContracts() {
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
+
+    public List<Request> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(List<Request> requests) {
+        this.requests = requests;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+
+
+    public List<Contract> getBorrowedContracts() {
         return borrowedContracts;
     }
 
-    public void setBorrowedContracts(Set<Contract> borrowedContracts) {
+    public void setBorrowedContracts(List<Contract> borrowedContracts) {
         this.borrowedContracts = borrowedContracts;
     }
 
-    public Set<Contract> getOwnedContracts() {
+    public List<Contract> getOwnedContracts() {
         return ownedContracts;
     }
 
-    public void setOwnedContracts(Set<Contract> ownedContracts) {
+    public void setOwnedContracts(List<Contract> ownedContracts) {
         this.ownedContracts = ownedContracts;
     }
 
-    public Set<CustomerService> getCustomerServices() {
+    public List<CustomerService> getCustomerServices() {
         return customerServices;
     }
 
-    public void setCustomerServices(Set<CustomerService> customerServices) {
+    public void setCustomerServices(List<CustomerService> customerServices) {
         this.customerServices = customerServices;
     }
 
-    public Set<Notification> getNotifications() {
+    public List<Notification> getNotifications() {
         return notifications;
     }
 
-    public void setNotifications(Set<Notification> notifications) {
+    public void setNotifications(List<Notification> notifications) {
         this.notifications = notifications;
     }
 }

@@ -1,4 +1,5 @@
 package com.example.borrowit.configuration;
+
 public class EmailRequest {
     private String to;
     private String subject;

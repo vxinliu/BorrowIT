@@ -29,6 +29,8 @@ public class Feedback {
     @OneToMany(mappedBy = "feedback")
     private Set<Reacts> reacts;
 
+
+
     public Long getId() {
         return id;
     }

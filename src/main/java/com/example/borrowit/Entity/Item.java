@@ -1,5 +1,6 @@
 package com.example.borrowit.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -51,6 +52,33 @@ public class Item {
     @OneToMany
     @JsonIgnore // Ignorer la sérialisation de la propriété "feedbacks"
     private Set<Feedback> feedbacks;
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @JsonManagedReference
+    private Set<Commande> commandes;
+
+    public Set<Commande> getCommandes() {
+        return commandes;
+    }
+
+    public void setCommandes(Set<Commande> commandes) {
+        this.commandes = commandes;
+    }
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "item-discount")
+    @JsonIgnore
+    private Set<Discount> discounts;
+
+    public Set<Discount> getDiscounts() {
+        return discounts;
+    }
+
+    public void setDiscounts(Set<Discount> discounts) {
+        this.discounts = discounts;
+    }
+
 
 
     public boolean getAv() {

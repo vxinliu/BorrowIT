@@ -2,10 +2,16 @@ package com.example.borrowit.Entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Set;
+
+
 
 @Entity
 @Data
@@ -33,6 +39,7 @@ public class Category {
     //private  CategoryType categoryType;
 
     @OneToMany(mappedBy = "category")
+    @JsonManagedReference(value = "item-category")
     @JsonIgnore // Ignorer cette relation dans la sérialisation pour éviter la boucle infinie
     private Set<Item> items;
 
@@ -75,4 +82,7 @@ public class Category {
     public void setItems(Set<Item> items) {
         this.items = items;
     }
+
+
+
 }

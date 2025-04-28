@@ -1,13 +1,14 @@
 package com.example.borrowit.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.Date;
+import java.util.*;
 
 @Entity
-@Data
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,9 +25,7 @@ public class Commande {
     private String status;
     //@JsonProperty
     private String description;
-@OneToOne
-@JsonProperty("item")
-private Item item;
+
 
     public void setId(Long id) {
         this.id = id;
@@ -36,7 +35,13 @@ private Item item;
         return id;
     }
 
+    public Discount getDiscount() {
+        return discount;
+    }
 
+    public void setDiscount(Discount discount) {
+        this.discount = discount;
+    }
 
     public String getDescription() {
         return description;
@@ -81,20 +86,25 @@ private Item item;
         return item;
     }
 
+    public void setItem(Item item) {
+        this.item = item;
+    }
 
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "discount_id")
-//    //@JsonBackReference
-//    private Discount discount;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "discount_id")
+    @JsonBackReference(value = "discount-commande")
+    @JsonIgnore
+    private Discount discount;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 
-
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    @JsonIgnore
+    private Item item;
 
 
 }
-
-
-

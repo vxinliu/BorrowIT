@@ -1,4 +1,4 @@
-package com.example.borrowit.Dto;
+package com.example.borrowit.DTO;
 
 import com.example.borrowit.Entity.StatusItem;
 import com.example.borrowit.Entity.User;

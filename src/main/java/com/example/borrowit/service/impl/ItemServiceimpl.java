@@ -1,5 +1,6 @@
 package com.example.borrowit.service.impl;
-import com.example.borrowit.Dto.ItemsDTO;
+
+import com.example.borrowit.DTO.ItemsDTO;
 import com.example.borrowit.Entity.Category;
 import com.example.borrowit.Entity.Item;
 import com.example.borrowit.Entity.StatusItem;
@@ -92,7 +93,7 @@ public class ItemServiceimpl implements ItemService {
         Item existingItem = itemRepository.findById(idItem).get();
         existingItem.setStatusItem(statusItem);
         itemRepository.save(existingItem);
-        }
+    }
 
     @Override
     public boolean deleteItem(Long id) {

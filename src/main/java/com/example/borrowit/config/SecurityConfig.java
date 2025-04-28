@@ -3,7 +3,6 @@ package com.example.borrowit.config;
 import com.example.borrowit.JwtAuthorizationFilter;
 import com.example.borrowit.JwtUtil;
 import com.example.borrowit.service.impl.UserService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,6 +10,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,10 +27,6 @@ public class SecurityConfig {
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
-    // Lire la valeur depuis application.properties
-    @Value("${security.jwt.enabled:true}")
-    private boolean jwtEnabled;
-
     public SecurityConfig(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
@@ -41,35 +37,42 @@ public class SecurityConfig {
         JwtAuthorizationFilter jwtAuthorizationFilter = new JwtAuthorizationFilter(authenticationManager, userService, jwtUtil);
 
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/users/**").permitAll()
-                        .requestMatchers("/api/forgot-password", "/api/reset-password").permitAll()
+                        // Routes publiques
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/api/items/**",
+                                "/api/categories/All",
+                                "/commandes/**",
+                                 "/commandes/item/**",
+                                "/commandes/user/**",
+                                "/commandes/borrower/**",
+                                "/discounts/**",
+                                "/api/users/**",
+                                "/api/forgot-password",
+                                "/api/reset-password",
+                                "/contracts/**",
+                                "/payments/**",
+                                "/stripe/**",
+                                "/items/**",
+                                "/api/users/image/**"
+                        ).permitAll()
+
+                        // Routes nécessitant authentification
                         .requestMatchers("/api/test/auth-status").authenticated()
-                        .requestMatchers("/contracts/**").permitAll()
-                        .requestMatchers("/contracts/user/**").permitAll()
-                        .requestMatchers("/payments/**").permitAll()
-                        .requestMatchers("/payments/by-contract/**").permitAll()
-                        .requestMatchers("/payments/confirm/**").permitAll()
-                        .requestMatchers("/stripe/**").permitAll()
-                        .requestMatchers("/items/**").permitAll()
-                        .requestMatchers("/commandes/**").permitAll()
-                        .requestMatchers("/commandes/user/**").permitAll()
+
+                        // Toutes les autres routes
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .headers(headers -> headers
                         .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsMode.SAMEORIGIN))
                         .contentSecurityPolicy(csp -> csp.policyDirectives("frame-ancestors 'self' http://localhost:4200"))
                         .xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
                 );
-
-        // Ajouter le filtre seulement si activé
-        if (jwtEnabled) {
-            http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
-        }
 
         return http.build();
     }

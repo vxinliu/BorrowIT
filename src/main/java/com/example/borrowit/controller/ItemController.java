@@ -1,7 +1,8 @@
-package com.example.borrowit.controller;
+package com.example.borrowit.Controller;
 
-import com.example.borrowit.Dto.ItemsDTO;
+import com.example.borrowit.DTO.ItemsDTO;
 import com.example.borrowit.Entity.Item;
+
 import com.example.borrowit.Entity.StatusItem;
 import com.example.borrowit.configuration.EmailServiceStatusUpdate;
 import com.example.borrowit.repository.ItemRepository;
@@ -10,26 +11,38 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/items")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 
 public class ItemController {
 
     @Autowired
     private ItemServiceimpl itemService;
+    private static final Logger logger = LoggerFactory.getLogger(ItemController.class);
+
     @Autowired
     private EmailServiceStatusUpdate emailServiceStatusUpdate;
     @Autowired
     private ItemRepository itemRepository;
 
     @GetMapping("/All")
-    public List<ItemsDTO> getAllItems() {
-        return itemService.getAllItems();
+    public ResponseEntity<?> getAllItems() {
+        try {
+            List<ItemsDTO> items = itemService.getAllItems();
+            return ResponseEntity.ok(items);
+        } catch (Exception e) {
+            // Log the exception for better debugging
+            logger.error("Error fetching items: ", e);
+            return ResponseEntity.internalServerError().body("Error fetching items: " + e.getMessage());
+        }
     }
+
 
     @GetMapping("/get/{id}")
     public ResponseEntity<Item> getItemById(@PathVariable Long id) {
@@ -51,6 +64,7 @@ public class ItemController {
     public void updateStatusItem(@PathVariable Long id,@PathVariable StatusItem statusItem) {
         itemService.updateStatusItem(id, statusItem); // update logic
         Item item = itemRepository.findById(id).get();
+
 
         String userEmail = item.getOwner().getEmail(); // assuming an Item is linked to a User
 

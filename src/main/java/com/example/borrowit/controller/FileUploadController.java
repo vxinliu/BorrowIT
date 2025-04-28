@@ -1,4 +1,4 @@
-package com.example.borrowit.controller;
+package com.example.borrowit.Controller;
 
 
 import com.example.borrowit.service.FileUploadService;
