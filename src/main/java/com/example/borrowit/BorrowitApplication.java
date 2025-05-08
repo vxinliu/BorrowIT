@@ -12,5 +12,4 @@ public class BorrowitApplication {
     public static void main(String[] args) {
         SpringApplication.run(BorrowitApplication.class, args);
     }
-
 }

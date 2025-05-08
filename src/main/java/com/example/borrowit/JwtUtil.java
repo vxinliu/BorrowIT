@@ -18,35 +18,28 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    // Clé secrète utilisée pour signer et valider le token
     private static final String SECRET_KEY_STRING = "your-secret-key-that-is-at-least-32-characters-long";
     private static final SecretKey SECRET_KEY = new SecretKeySpec(
             SECRET_KEY_STRING.getBytes(StandardCharsets.UTF_8),
             SignatureAlgorithm.HS256.getJcaName());
 
-    // Durée de validité du token (10 heures ici)
-    private static final int TOKEN_VALIDITY = 1000 * 60 * 60 * 10; // 10 heures
+    private static final int TOKEN_VALIDITY = 1000 * 60 * 60 * 10; // 10 hours
 
-    // Logger pour les erreurs et événements
     private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 
-    // Extraire le nom d'utilisateur (email) du token
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    // Extraire la date d'expiration du token
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    // Extraire une réclamation spécifique du token
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token).getBody();
         return claimsResolver.apply(claims);
     }
 
-    // Analyser toutes les réclamations du token
     public Jws<Claims> extractAllClaims(String token) {
         try {
             return Jwts.parserBuilder()
@@ -65,20 +58,18 @@ public class JwtUtil {
         }
     }
 
-    // Vérifier si le token est expiré
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    // Générer un token avec des revendications et un sujet (email)
     public String generateToken(UserDetails userDetails) {
         if (!(userDetails instanceof UserDetailsImpl)) {
             throw new IllegalArgumentException("UserDetails must be of type UserDetailsImpl");
         }
 
         UserDetailsImpl userDetailsImpl = (UserDetailsImpl) userDetails;
-
         Map<String, Object> claims = new HashMap<>();
+        claims.put("id", userDetailsImpl.getId());
         claims.put("name", userDetailsImpl.getName());
         claims.put("genre", userDetailsImpl.getGenre());
         claims.put("dateDeNaissance", userDetailsImpl.getDateDeNaissance().toString());
@@ -88,7 +79,6 @@ public class JwtUtil {
         return createToken(claims, userDetails.getUsername());
     }
 
-    // Créer un token avec des revendications, un sujet, une date d'émission et une date d'expiration
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
@@ -99,7 +89,6 @@ public class JwtUtil {
                 .compact();
     }
 
-    // Valider le token
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));

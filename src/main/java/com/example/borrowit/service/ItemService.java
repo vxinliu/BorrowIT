@@ -1,6 +1,6 @@
 package com.example.borrowit.service;
 
-import com.example.borrowit.DTO.ItemsDTO;
+import com.example.borrowit.Dto.ItemsDTO;
 import com.example.borrowit.Entity.Item;
 import com.example.borrowit.Entity.StatusItem;
 

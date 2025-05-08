@@ -8,13 +8,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class Sms {
 
-    @Value("ACe14ac1659f6de642038721d26cab050b")
     private String Sid;
 
-    @Value("81360e8188ae6d31db027e1ee1fa1cbb")
     private String Token;
 
-    @Value("+16072988192")
     private String twilioNumber;
 
     public Sms() {

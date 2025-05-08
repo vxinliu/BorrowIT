@@ -1,6 +1,6 @@
 package com.example.borrowit.controller;
 
-import com.example.borrowit.DTO.DiscountDTO;
+import com.example.borrowit.Dto.DiscountDTO;
 import com.example.borrowit.Entity.Discount;
 import com.example.borrowit.repository.DiscountRepository;
 import com.example.borrowit.service.impl.DiscountService;
@@ -23,9 +23,9 @@ public class DiscountController {
     private  DiscountService discountService;
     private DiscountRepository discountRepository;
     // Create a new discount
-    @PostMapping("/add-discounts")
-    public DiscountDTO createDiscount(@RequestBody DiscountDTO discountDTO) {
-        Discount createdDiscount = discountService.createDiscount(discountDTO);
+   @PostMapping("/add-discounts")
+    public DiscountDTO createDiscount(@RequestBody DiscountDTO discountDto) {
+        Discount createdDiscount = discountService.createDiscount(discountDto);
         return mapToDiscountDTO(createdDiscount);
     }
 
@@ -57,8 +57,8 @@ public class DiscountController {
     public void deleteDiscount(@PathVariable Long id) {
         discountService.deleteDiscount(id);
     }
-    /* Route pour obtenir les discounts actifs pour un item
-    @GetMapping("/item/{itemId}/active")
+    // Route pour obtenir les discounts actifs pour un item
+    /*@GetMapping("/item/{itemId}/active")
     public List<DiscountDTO> getActiveDiscountsForItem(@PathVariable Long itemId) {
         List<Discount> discounts = discountService.getActiveDiscountsForItem(itemId);
         return discounts.stream()

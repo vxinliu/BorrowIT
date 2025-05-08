@@ -1,6 +1,4 @@
 package com.example.borrowit.Entity;
-
-import com.example.borrowit.Entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -74,4 +72,7 @@ public class UserDetailsImpl implements UserDetails {
     public String getRole() {
         return user.getRole().name();
     }
+
+
+
 }

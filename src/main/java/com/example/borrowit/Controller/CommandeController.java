@@ -1,6 +1,6 @@
 package com.example.borrowit.controller;
 
-import com.example.borrowit.DTO.CommandeRequest;
+import com.example.borrowit.Dto.CommandeRequest;
 import com.example.borrowit.Entity.*;
 import com.example.borrowit.service.*;
 import com.example.borrowit.service.impl.CommandeServiceImpl;

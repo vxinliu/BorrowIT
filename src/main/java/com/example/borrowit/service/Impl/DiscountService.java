@@ -1,6 +1,6 @@
 package com.example.borrowit.service.impl;
 
-import com.example.borrowit.DTO.DiscountDTO;
+import com.example.borrowit.Dto.DiscountDTO;
 import com.example.borrowit.Entity.Discount;
 import com.example.borrowit.Entity.Item;
 import com.example.borrowit.Entity.User;

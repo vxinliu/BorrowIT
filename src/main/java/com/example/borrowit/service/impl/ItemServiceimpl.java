@@ -1,6 +1,7 @@
 package com.example.borrowit.service.impl;
 
-import com.example.borrowit.DTO.ItemsDTO;
+
+import com.example.borrowit.Dto.ItemsDTO;
 import com.example.borrowit.Entity.Category;
 import com.example.borrowit.Entity.Item;
 import com.example.borrowit.Entity.StatusItem;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ItemServiceimpl implements ItemService {
+public class ItemServiceImpl implements ItemService {
 
     @Autowired
     private ItemRepository itemRepository;

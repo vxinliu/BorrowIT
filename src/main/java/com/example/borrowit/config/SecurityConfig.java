@@ -19,6 +19,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter.XFrameOptionsMode;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -33,6 +36,17 @@ public class SecurityConfig {
     }
 
     @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("http://localhost:4200");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
+    }
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         JwtAuthorizationFilter jwtAuthorizationFilter = new JwtAuthorizationFilter(authenticationManager, userService, jwtUtil);
 
@@ -40,6 +54,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
+
                         // Routes publiques
                         .requestMatchers(
                                 "/api/auth/**",
@@ -50,6 +65,10 @@ public class SecurityConfig {
                                 "/commandes/user/**",
                                 "/commandes/borrower/**",
                                 "/discounts/**",
+                                "/discounts/add-discounts/**",
+                                "/discounts/get-discounts/**",
+                                "/discounts/itemactive/**",
+
                                 "/api/users/**",
                                 "/api/forgot-password",
                                 "/api/reset-password",
@@ -57,10 +76,20 @@ public class SecurityConfig {
                                 "/payments/**",
                                 "/stripe/**",
                                 "/items/**",
-                                "/api/users/image/**"
+                                "/api/users/image/**",
+                                "/feedbacks/retrieve-all-feedbacks"
                         ).permitAll()
 
                         // Routes nécessitant authentification
+
+                        //.requestMatchers("/feedbacks/**").authenticated() // Add this line
+                        .requestMatchers(
+                                "/feedbacks/retrieve-all-feedbacks", // Autoriser l'accès public
+                                "/feedbacks/retrieve-feedback/**"
+                        ).permitAll()
+                        .requestMatchers("/feedbacks/**").authenticated() // Le reste nécessite une auth
+                        .requestMatchers("/api/forgot-password", "/api/reset-password").permitAll()
+
                         .requestMatchers("/api/test/auth-status").authenticated()
 
                         // Toutes les autres routes

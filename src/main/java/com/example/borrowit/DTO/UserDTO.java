@@ -1,4 +1,4 @@
-package com.example.borrowit.DTO;
+package com.example.borrowit.Dto;
 
 import lombok.*;
 

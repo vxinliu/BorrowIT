@@ -1,81 +1,121 @@
 package com.example.borrowit.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 @Entity
-@Data
-public class Feedback {
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Feedback implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String message;
-
     private LocalDateTime date;
+    @Column(name = "sentiment_score")
+    private Double sentimentScore;
 
-    @ManyToOne
-    @JoinColumn(name = "item_id")  // Optionnel, si tu veux une colonne explicite pour Item
-    private Item item;
+    @Column(name = "suggested_reaction")
+    private String suggestedReaction;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")  // Ajout du mappage de la relation avec User
+    // @ManyToOne
+    // private Item item;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonBackReference
     private User user;
 
-    @OneToMany(mappedBy = "feedback")
-    private Set<Reacts> reacts;
+    @OneToMany(mappedBy = "feedback", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Reacts> reacts;
 
+    private boolean reported;
+    private String reason;
 
+    public void setSentimentScore(Double sentimentScore) {
+        this.sentimentScore = sentimentScore;
+    }
+
+    public void setSuggestedReaction(String suggestedReaction) {
+        this.suggestedReaction = suggestedReaction;
+    }
+
+    public Double getSentimentScore() {
+        return sentimentScore;
+    }
+
+    public String getSuggestedReaction() {
+        return suggestedReaction;
+    }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public LocalDateTime getDate() {
         return date;
+    }
+
+    public List<Reacts> getReacts() {
+        return reacts;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
-    public Item getItem() {
-        return item;
-    }
-
-    public void setItem(Item item) {
-        this.item = item;
-    }
-
-    public Set<Reacts> getReacts() {
-        return reacts;
-    }
-
-    public void setReacts(Set<Reacts> reacts) {
+    public void setReacts(List<Reacts> reacts) {
         this.reacts = reacts;
+    }
+
+    public boolean isReported() {
+        return reported;
+    }
+
+    public void setReported(boolean reported) {
+        this.reported = reported;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 }

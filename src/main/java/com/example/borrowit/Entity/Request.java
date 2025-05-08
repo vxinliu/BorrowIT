@@ -25,7 +25,7 @@ public class Request {
     @OneToOne
     private Discount discount;
 
-public enum RequestStatus {
+    public enum RequestStatus {
         PENDING, ACCEPTED, REJECTED
     }
 }

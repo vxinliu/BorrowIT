@@ -1,6 +1,6 @@
 package com.example.borrowit.service;
 
-import com.example.borrowit.DTO.CommandeDTO;
+import com.example.borrowit.Dto.CommandeDTO;
 import com.example.borrowit.Entity.Commande;
 import java.util.*;
 
